@@ -17,12 +17,13 @@
  */
 package com.diversityarrays.dalclient;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * DAL permissions are similar to Unix permission bits.
- * TODO copy the PDF doco descriptions here
+ * Please refer to the DAL Programmer's Reference for further details.
  * @author brian
  *
  */
@@ -81,7 +82,7 @@ public enum Permission {
 	 * @param permissions
 	 * @return an Integer
 	 */
-	static public Integer asInteger(Set<Permission> permissions) {
+	static public Integer asInteger(Collection<Permission> permissions) {
 		int result = 0;
 		for (Permission p : permissions) {
 			result |= p.onebit;
