@@ -160,14 +160,12 @@ public class HttpPostBuilder {
 		for (Pair<String,String> pair : collectedPairs) {
 			String value = pair.b;
 			if (value==null) {
-				// TODO resolve whether or not DAL handles null values
-				// For now, null values are not handled correctly so make them "empty"
+				// When last tested, null values are not handled correctly so make them "empty"
 				// (for a start, the signature string gets befuddled with 'null')
 				value = "";
 			}
 			dataForSignature.append(value);
 			namesInOrder.append(pair.a).append(',');
-			// TODO check about the extra comma issue
 		}
 
 		String forSignature = dataForSignature.toString();
@@ -220,7 +218,6 @@ public class HttpPostBuilder {
 		for (Pair<String,String> pair : collectedPairs) {
 			dataForSignature.append(pair.b);
 			namesInOrderBuilder.append(pair.a).append(',');
-			// TODO check about the extra comma issue
 		}
 		dataForSignature.append(md5);
 		
@@ -259,7 +256,6 @@ public class HttpPostBuilder {
 		for (Pair<String,String> pair : collectedPairs) {
 			dataForSignature.append(pair.a);
 			namesInOrderBuilder.append(pair.b).append(',');
-			// TODO check about the extra comma issue
 		}
 		dataForSignature.append(md5);
 		String namesInOrder = namesInOrderBuilder.toString();

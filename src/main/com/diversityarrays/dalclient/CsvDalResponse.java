@@ -145,8 +145,7 @@ public class CsvDalResponse extends AbstractDalResponse {
 
 	@Override
 	public String getResponseErrorMessage() throws DalResponseFormatException {
-		// I don't think there can be an error
-		// TODO check this - talk to Puthick
+		// There can be an error for a CSV response
 		return null;
 	}
 

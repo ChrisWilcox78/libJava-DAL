@@ -122,8 +122,6 @@ public class CommandBuilder implements QueryBuilder {
 		
 		if (filterClause!=null && ! filterClause.isEmpty()) {
 			try {
-				// TODO 1) check with Puthick about whether Filtering can occur in the PATH of a POST
-				// TODO 2) Use (new URI(filterClause).getPath()) instead of URLEncoder.encode(filterClause)
 				sb.append("?").append(DALClient.FILTERING_KEYWORD).append("=").append(URLEncoder.encode(filterClause, ENCODING_CHARSETNAME));
 			} catch (UnsupportedEncodingException e) {
 				throw new RuntimeException(e);

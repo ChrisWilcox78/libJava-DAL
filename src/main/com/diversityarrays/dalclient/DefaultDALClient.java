@@ -481,14 +481,14 @@ public class DefaultDALClient implements DALClient {
 				if (responseType.isXML()) {
 					if (contentType!=null && ! contentTypeIsXML(contentType)) {
 						// TODO check if httpErrorReason=="Internal Server Error" in which case we may want to transform to something else?
-							System.err.println("Warning: response content type is '"+contentType+"' for XML");
-							if (DalUtil.isHttpStatusCodeOk(responseInfo.httpStatusCode)) {
-								dalErrorMessage = "DAL response code="+responseInfo.httpStatusCode+" has unexpected Content-Type: '"+contentType+"'";
-							}
-							else {
-								// Just use the error code
-								dalErrorMessage = responseInfo.httpErrorReason+" (Content-Type="+contentType+")";
-							}
+						System.err.println("Warning: response content type is '"+contentType+"' for XML");
+						if (DalUtil.isHttpStatusCodeOk(responseInfo.httpStatusCode)) {
+							dalErrorMessage = "DAL response code="+responseInfo.httpStatusCode+" has unexpected Content-Type: '"+contentType+"'";
+						}
+						else {
+							// Just use the error code
+							dalErrorMessage = responseInfo.httpErrorReason+" (Content-Type="+contentType+")";
+						}
 					}
 					else {
 						Throwable error = null;

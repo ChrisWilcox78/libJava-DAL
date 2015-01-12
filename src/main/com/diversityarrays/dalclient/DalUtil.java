@@ -1075,7 +1075,6 @@ public class DalUtil {
 				}
 			}
 		}
-		// TODO Check if this is correct - I'm pretty sure it is!
 		result.add(field.toString());
 		
 		return result.toArray(new String[result.size()]);
