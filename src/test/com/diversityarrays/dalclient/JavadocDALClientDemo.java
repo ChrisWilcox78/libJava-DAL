@@ -30,7 +30,7 @@ import com.diversityarrays.dalclient.ResponseType;
 
 /**
  * An implementation of the code in the javadoc for the package <code>com.diversityarrays.dalclient</code>.
- * 
+ *
  * @author brian
  *
  */
@@ -79,42 +79,56 @@ public class JavadocDALClientDemo {
 			// Output is something like:
 			// Logged in as id=7, groupId=2, groupName=users
 
-			// <b>Step 2:</b> Print out all of the ItemUnit records in the database in JSON format
+			// <b>Step 2:</b> Print out all of the Genus records in the database in JSON format
 
 			System.out.println("=== Step 2 =========");
 
-			DalResponse itemUnitResponse = client.performQuery("list/itemunit");
-			itemUnitResponse.printOn(System.out);
+			DalResponse genusResponse = client.performQuery("list/genus");
+			genusResponse.printOn(System.out);
 
-			// <b>Step 3:</b> We want to display the first 20 TrialUnit records
-			// that have a barcode beginning with the character '7'.
-			// We will use the <b>CommandBuilder</b> to replace the parameters in a DAL
+			// <b>Step 3:</b> We want to display the first 5 GenotypeAlias records
+			// that have a <i>GenotypeAliasName</i> that starts with 'MUTANT'.
+			// We will use the <i>CommandBuilder</i> to replace the parameters in a DAL
 			// operation with specific values.
 
 			String cmd;
 			try {
-				cmd = new CommandBuilder("list/trialunit/_nperpage/page/_num")
-					.setParameter("_nperpage", "20")
+				//
+				//
+				cmd = new CommandBuilder("list/genotypealias/_nperpage/page/_num")
+					.setParameter("_nperpage", "5")
 					.setParameter("_num",      "1")
-					.setFilterClause("TrialUnitId < 3") // this is optional
+					.setFilterClause("GenotypeAliasName LIKE 'MUTANT%'")
 					.build();
 			} catch (DalMissingParameterException e) {
 				throw new RuntimeException(e);
-			}	
+			}
 
 			System.out.println("=== Step 3 =========");
 			client.performQuery(cmd).printOn(System.out);
 
-			// <b>Step 4:</b> Display the details for a specific ItemUnit using XML.
-			//         This command is so simple we do not need to use <b>CommandBuilder</b>.
+			// Alternatively, you could do it this way:
+
+			DalResponse response = client.prepareQuery("list/genotypealias/_nperpage/page/_num")
+					.setParameter("_nperpage", "5")
+					.setParameter("_num",      "1")
+					.setFilterClause("GenotypeAliasName LIKE 'MUTANT%'")
+					.execute();
+
+			response.printOn(System.out);
+
+			// <b>Step 4:</b> Display the details for a specific Genus using XML.
+			//         This command is so simple we do not need to use <i>CommandBuilder</i>.
 
 			System.out.println("=== Step 4 =========");
 			client.setResponseType(ResponseType.XML); // change to XML
-			client.performQuery("get/itemunit/"+1).printOn(System.out);
+			client.performQuery("get/genus/" + 2).printOn(System.out);
 
 		} catch (DalResponseException e) {
 			System.err.println("Query failed: "+e.getMessage());
 		} catch (IOException e) {
+			System.err.println("Query failed: "+e.getMessage());
+		} catch (DalMissingParameterException e) {
 			System.err.println("Query failed: "+e.getMessage());
 		} finally {
 			// Make sure that we finish off the session.
