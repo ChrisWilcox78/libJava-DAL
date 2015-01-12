@@ -18,14 +18,13 @@
 /**
  * <p>
  * A quick hack at a JSON parser when I needed one.
- * </p>
  * <p>
  * <b>Usage:</b>
  * <pre>
  * JsonParser parser = new JsonParser(a_string_in_json_format);
  * if (parser.isListResult()) {
  *    // has a list of embedded json
- *    List<?> list = parser.getListResult();
+ *    List&lt;?&gt; list = parser.getListResult();
  * }
  * else if (parser.isMapResult()) {
  *    JsonMap map = parser.getMapResult();
@@ -34,6 +33,5 @@
  *    // eh?
  * }
  * </pre>
- * </p>
  */
 package net.pearcan.json;
