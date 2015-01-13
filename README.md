@@ -8,6 +8,10 @@ the other assorted method calls required to GET or POST requests.
 Support is also provided for automatically parsing the JSON or XML responses
 and for retrieving or visiting the records in a format-independent fashion.
 
+A pre-built copy of `JavadocDALClientDemo.java` is available as `javadoc-demo.jar`
+and may be run from the project's root directory; `lib` directory is referenced
+in the `Class-Path` of the jar file.
+
 ---
 
 	DALClient client = new DefaultDALClient(dalurl)
