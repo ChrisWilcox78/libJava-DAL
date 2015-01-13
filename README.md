@@ -111,11 +111,11 @@ and for retrieving or visiting the records in a format-independent fashion.
 
 	    client.setResponseType(ResponseType.XML); // change to XML
 	    for (Integer id : minMaxGenusId) {
-		if (id != null) {
-		    DalResponse rsp = client.performQuery("get/genus/" + id);
-		    System.out.println("GenusName#" + id + "="
-		        + rsp.getRecordFieldValue("Genus", "GenusName"));
-		}
+	        if (id != null) {
+	            DalResponse rsp = client.performQuery("get/genus/" + id);
+	            System.out.println("GenusName#" + id + "="
+	                + rsp.getRecordFieldValue("Genus", "GenusName"));
+	        }
 	    }
 
 	} catch (DalResponseException e) {
