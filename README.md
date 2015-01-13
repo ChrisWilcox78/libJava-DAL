@@ -52,24 +52,28 @@ and for retrieving or visiting the records in a format-independent fashion.
 	    DalResponseRecordVisitor visitor = new DalResponseRecordVisitor() {
 	        @Override
 	        public boolean visitResponseRecord(String tagName, DalResponseRecord record) {
-	    	    Integer genusId = new Integer(record.rowdata.get("GenusId"));
-	    	    if (minMaxGenusId[0] == null || genusId < minMaxGenusId[0]) {
-		        minMaxGenusId[0] = genusId;
-		    }
+
+	            Integer genusId = new Integer(record.rowdata.get("GenusId"));
+
+	            if (minMaxGenusId[0] == null || genusId < minMaxGenusId[0]) {
+	                minMaxGenusId[0] = genusId;
+	            }
+
 	            if (minMaxGenusId[1] == null || genusId > minMaxGenusId[1]) {
-	    	        minMaxGenusId[1] = genusId;
-	    	    }
-	    	    return true; // look at all records
+	                minMaxGenusId[1] = genusId;
+	            }
+	            return true; // look at all records
 	    	}
 	    };
 
 	    genusResponse.visitResults(visitor, "Genus");
+
 	    System.err.println("GenusIds in range [" + minMaxGenusId[0]
 	    		 + " to " + minMaxGenusId[1] + "]");
 
 // <b>Step 3:</b> We want to display the first 5 GenotypeAlias records
 <br>
-// that have a <i>GenotypeAliasName</i> that starts with 'MUTANT'.
+// that have a <i>GenotypeAliasName</i> starting with 'MUTANT'.
 <br>
 // In this variation, we use a <i>CommandBuilder</i> to replace the parameters in a DAL
 <br>
