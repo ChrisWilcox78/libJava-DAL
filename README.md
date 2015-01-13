@@ -2,7 +2,11 @@
 DAL client library for Java
 
 This library lets you code client applications to use a DAL server and
-not be concerned with the low-level 
+not be concerned with the low-level details of maintaining the HTTP connection
+the other assorted method calls required to GET or POST requests.
+
+Support is also provided for automatically parsing the JSON or XML responses
+and for retrieving or visiting the records in a format-independent fashion.
 
 ---
 
@@ -42,6 +46,27 @@ not be concerned with the low-level
 	    DalResponse genusResponse = client.performQuery("list/genus");
 	    genusResponse.printOn(System.out);
 
+	    // Find the smallest and largest GenusId in the results
+	    final Integer[] minMaxGenusId = new Integer[2];
+
+	    DalResponseRecordVisitor visitor = new DalResponseRecordVisitor() {
+	        @Override
+	        public boolean visitResponseRecord(String tagName, DalResponseRecord record) {
+	    	    Integer genusId = new Integer(record.rowdata.get("GenusId"));
+	    	    if (minMaxGenusId[0] == null || genusId < minMaxGenusId[0]) {
+		        minMaxGenusId[0] = genusId;
+		    }
+	            if (minMaxGenusId[1] == null || genusId > minMaxGenusId[1]) {
+	    	        minMaxGenusId[1] = genusId;
+	    	    }
+	    	    return true; // look at all records
+	    	}
+	    };
+
+	    genusResponse.visitResults(visitor, "Genus");
+	    System.err.println("GenusIds in range [" + minMaxGenusId[0]
+	    		 + " to " + minMaxGenusId[1] + "]");
+
 // <b>Step 3:</b> We want to display the first 5 GenotypeAlias records
 <br>
 // that have a <i>GenotypeAliasName</i> that starts with 'MUTANT'.
@@ -79,8 +104,15 @@ not be concerned with the low-level
 // This command is so simple we do not need to use <i>CommandBuilder</i>.
 
 	    System.out.println("=== Step 4 =========");
+
 	    client.setResponseType(ResponseType.XML); // change to XML
-	    client.performQuery("get/genus/" + 2).printOn(System.out);
+	    for (Integer id : minMaxGenusId) {
+		if (id != null) {
+		    DalResponse rsp = client.performQuery("get/genus/" + id);
+		    System.out.println("GenusName#" + id + "="
+		        + rsp.getRecordFieldValue("Genus", "GenusName"));
+		}
+	    }
 
 	} catch (DalResponseException e) {
 	    System.err.println("Query failed: "+e.getMessage());

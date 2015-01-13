@@ -85,11 +85,11 @@ public class JavadocDALClientDemo {
 
 			DalResponse genusResponse = client.performQuery("list/genus");
 			genusResponse.printOn(System.out);
-			
-			final Integer[] minMaxGenusId = new Integer[2];
+
 			// Find the smallest and largest GenusId in the results
+			final Integer[] minMaxGenusId = new Integer[2];
 			DalResponseRecordVisitor visitor = new DalResponseRecordVisitor() {
-				
+
 				@Override
 				public boolean visitResponseRecord(String tagName, DalResponseRecord record) {
 					Integer genusId = new Integer(record.rowdata.get("GenusId"));
@@ -103,7 +103,9 @@ public class JavadocDALClientDemo {
 				}
 			};
 			genusResponse.visitResults(visitor, "Genus");
-			System.err.println("GenusIds in range [" + minMaxGenusId[0] + " to " + minMaxGenusId[1] + "]");
+			System.err.println("GenusIds in range [" + minMaxGenusId[0] 
+					+ " to " + minMaxGenusId[1] + "]");
+
 			// <b>Step 3:</b> We want to display the first 5 GenotypeAlias records
 			// that have a <i>GenotypeAliasName</i> that starts with 'MUTANT'.
 			// We will use the <i>CommandBuilder</i> to replace the parameters in a DAL
@@ -139,11 +141,13 @@ public class JavadocDALClientDemo {
 			//         This command is so simple we do not need to use <i>CommandBuilder</i>.
 
 			System.out.println("=== Step 4 =========");
+			
+			client.setResponseType(ResponseType.XML); // change to XML
 			for (Integer id : minMaxGenusId) {
 				if (id != null) {
-					client.setResponseType(ResponseType.XML); // change to XML
 					DalResponse rsp = client.performQuery("get/genus/" + id);
-					System.out.println("GenusName#" + id + "=" + rsp.getRecordFieldValue("Genus", "GenusName"));
+					System.out.println("GenusName#" + id + "="
+							+ rsp.getRecordFieldValue("Genus", "GenusName"));
 				}
 			}
 
