@@ -88,7 +88,7 @@ in the `Class-Path` of the jar file.
 	        cmd = new CommandBuilder("list/genotypealias/_nperpage/page/_num")
 	            .setParameter("_nperpage", "5")
 	            .setParameter("_num",      "1")
-	            .setFilterClause("GenotypeAliasName LIKE 'MUTANT'") // this is optional
+	            .setFilterClause("GenotypeAliasName LIKE 'MUTANT%'") // this is optional
 	            .build();
 	    } catch (DalMissingParameterException e) {
 	        throw new RuntimeException(e);
