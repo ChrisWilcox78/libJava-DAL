@@ -102,7 +102,7 @@ in the `Class-Path` of the jar file.
 	    DalResponse response = client.prepareQuery("list/genotypealias/_nperpage/page/_num")
 	        .setParameter("_nperpage", "5")
 	        .setParameter("_num",      "1")
-	        .setFilterClause("GenotypeAliasName LIKE 'MUTANT'") // this is optional
+	        .setFilterClause("GenotypeAliasName LIKE 'MUTANT%'") // this is optional
 	        .execute();
 
 		response.printOn(System.out);
