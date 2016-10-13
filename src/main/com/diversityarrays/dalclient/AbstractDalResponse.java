@@ -28,14 +28,26 @@ import java.io.PrintWriter;
  */
 public abstract class AbstractDalResponse implements DalResponse {
 	
-	static public boolean SHOW_TIMING = Boolean.getBoolean(AbstractDalResponse.class.getName()+".TIMING");
+	static public boolean SHOW_TIMING = Boolean.getBoolean(AbstractDalResponse.class.getName()+".TIMING"); //$NON-NLS-1$
 
 	private final String url;
 	private final HttpResponseInfo responseInfo;
+	
+	private boolean wantEmptyRecords;
 
 	public AbstractDalResponse(String url, HttpResponseInfo responseInfo) {
 		this.url = url;
 		this.responseInfo = responseInfo;
+	}
+	
+	@Override
+	public void setWantEmptyRecords(boolean b) {
+	    wantEmptyRecords = b;
+	}
+	
+	@Override
+    public boolean getWantEmptyRecords() {
+	    return wantEmptyRecords;
 	}
 	
 	@Override

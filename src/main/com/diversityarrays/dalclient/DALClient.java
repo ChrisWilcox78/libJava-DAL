@@ -38,20 +38,23 @@ public interface DALClient {
 	/**
 	 * This keyword is used for specifying filter clauses in the operations of
 	 * the form "list/&lt;entity&gt;/_nperpage/page/_num".
+	 * <p>
+	 * Deprecated in favour of the enum OperationKeyword.
 	 */
-	public static final String FILTERING_KEYWORD = "Filtering";
+	@Deprecated
+	public static final String FILTERING_KEYWORD = "Filtering"; //$NON-NLS-1$
 
 	/**
 	 * This is the tag name for a result record for the DAL operation
 	 * <code>login</code>. The value of this constant is <code>"User"</code>.
 	 */
-	static final String TAG_USER = "User";
+	static final String TAG_USER = "User"; //$NON-NLS-1$
 
 	/**
 	 * This is the attribute name for the TAG_USER record for the DAL operation
 	 * <code>login</code>. The value of this constant is <code>"UserId"</code>.
 	 */
-	static final String ATTR_USER_ID = "UserId";
+	static final String ATTR_USER_ID = "UserId"; //$NON-NLS-1$
 
 	/**
 	 * This is the tag name for a result record for the DAL Operation
@@ -59,41 +62,41 @@ public interface DALClient {
 	 * session key for use in DAL update operations. The value of this constant
 	 * is <code>"WriteToken"</code>.
 	 */
-	static final String TAG_WRITE_TOKEN = "WriteToken";
+	static final String TAG_WRITE_TOKEN = "WriteToken"; //$NON-NLS-1$
 
 	/**
 	 * This is the attribute name for a number of DAL operations. The value of
 	 * this constant is <code>"Value"</code>.
 	 */
-	static final String ATTR_VALUE = "Value";
+	static final String ATTR_VALUE = "Value"; //$NON-NLS-1$
 
 	/**
 	 * This is the tag name for a result record for the DAL Operation
 	 * <code>get/version</code>. The value of this constant is
 	 * <code>"Info"</code>.
 	 */
-	static final String TAG_INFO = "Info";
+	static final String TAG_INFO = "Info"; //$NON-NLS-1$
 
 	/**
 	 * This is the attribute name for the TAG_INFO record for the DAL operation
 	 * <code>get/version</code>. The attribute value contains the version number
 	 * of the DAL server. The value of this constant is <code>"Version"</code>.
 	 */
-	static final String ATTR_VERSION = "Version";
+	static final String ATTR_VERSION = "Version"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_INFO record for the DAL operation
 	 * <code>switch/group</code>. The attribute value contains the name of the
 	 * group. The value of this constant is <code>"GroupName"</code>.
 	 */
-	static final String ATTR_GROUP_NAME = "GroupName";
+	static final String ATTR_GROUP_NAME = "GroupName"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_INFO record for the DAL operation
 	 * <code>switch/group</code>. The attribute value contains TRUE if the group
 	 * is an administrator. The value of this constant is <code>"GAdmin"</code>.
 	 */
-	static final String ATTR_GADMIN = "GAdmin";
+	static final String ATTR_GADMIN = "GAdmin"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_INFO record for the DAL operation
@@ -102,7 +105,7 @@ public interface DALClient {
 	 * <code>switch/group/_gid</code>) and "0" otherwise. The value of this
 	 * constant is <code>"GroupSelectionStatus"</code>.
 	 */
-	static final String ATTR_GROUP_SELECTION_STATUS = "GroupSelectionStatus";
+	static final String ATTR_GROUP_SELECTION_STATUS = "GroupSelectionStatus"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_INFO record for the DAL operation
@@ -110,13 +113,13 @@ public interface DALClient {
 	 * user is logged in and "0" otherwise. The value of this constant is
 	 * <code>"LoginStatus"</code>.
 	 */
-	static final String ATTR_LOGIN_STATUS = "LoginStatus";
+	static final String ATTR_LOGIN_STATUS = "LoginStatus"; //$NON-NLS-1$
 
 	/**
 	 * This is the tag name for the record containing the error message returned
 	 * by the DAL server. This constant is <code>"Error"</code>.
 	 */
-	static final String TAG_ERROR = "Error";
+	static final String TAG_ERROR = "Error"; //$NON-NLS-1$
 
 	/**
 	 * This is the attribute name for the TAG_ERROR record. The attribute value
@@ -124,7 +127,7 @@ public interface DALClient {
 	 * <code>"Message"</code>.
 	 */
 
-	static final String ATTR_MESSAGE = "Message";
+	static final String ATTR_MESSAGE = "Message"; //$NON-NLS-1$
 
 	/**
 	 * This is the tag name of the result record for most DAL Operations which
@@ -132,7 +135,7 @@ public interface DALClient {
 	 * provides the tag name for the individual entity records. The value of
 	 * this constant is <code>"RecordMeta"</code>.
 	 */
-	static final String TAG_RECORD_META = "RecordMeta";
+	static final String TAG_RECORD_META = "RecordMeta"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_RECORD_META record. The value of
@@ -140,20 +143,20 @@ public interface DALClient {
 	 * contain the retrieved entity information. The value of this constant is
 	 * <code>"TagName"</code>.
 	 */
-	static final String ATTR_TAG_NAME = "TagName";
+	static final String ATTR_TAG_NAME = "TagName"; //$NON-NLS-1$
 
 	/**
 	 * This is the tag name returned by the <code>list/operations</code> DAL
 	 * request. The value of this constant is <code>"Operation"</code>.
 	 */
-	static final String TAG_OPERATION = "Operation";
+	static final String TAG_OPERATION = "Operation"; //$NON-NLS-1$
 
 	/**
 	 * This is the attribute name for the operation URL tail returned in the
 	 * TAG_OPERATION elements of the results for a <code>list/operations</code>
 	 * DAL request. The value of this constant is <code>"REST"</code>.
 	 */
-	static final String ATTR_REST = "REST";
+	static final String ATTR_REST = "REST"; //$NON-NLS-1$
 
 	/**
 	 * This is the name for the meta-data record returned as one of the
@@ -162,21 +165,21 @@ public interface DALClient {
 	 * number of pages available. The value of this constant is
 	 * <code>"Pagination"</code>.
 	 */
-	static final String TAG_PAGINATION = "Pagination";
+	static final String TAG_PAGINATION = "Pagination"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_PAGINATION record. The value of
 	 * this attribute provides the number of pages which may be requested. The
 	 * value of this constant is <code>"NumOfPages"</code>.
 	 */
-	static final String ATTR_NUM_OF_RECORDS = "NumOfRecords";
+	static final String ATTR_NUM_OF_RECORDS = "NumOfRecords"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_PAGINATION record. The value of
 	 * this attribute provides the number of pages which may be requested. The
 	 * value of this constant is <code>"NumOfPages"</code>.
 	 */
-	static final String ATTR_NUM_OF_PAGES = "NumOfPages";
+	static final String ATTR_NUM_OF_PAGES = "NumOfPages"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_PAGINATION record. The value of
@@ -184,7 +187,7 @@ public interface DALClient {
 	 * should reflect the value of the <code>_num</code> parameter supplied in
 	 * the request. The value of this constant is <code>"Page"</code>.
 	 */
-	static final String ATTR_PAGE = "Page";
+	static final String ATTR_PAGE = "Page"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_PAGINATION record. The value of
@@ -193,7 +196,7 @@ public interface DALClient {
 	 * in the request. The value of this constant is <code>"NumPerPage"</code>.
 	 */
 
-	static final String ATTR_NUM_PER_PAGE = "NumPerPage";
+	static final String ATTR_NUM_PER_PAGE = "NumPerPage"; //$NON-NLS-1$
 
 	/**
 	 * This is the tag name for the record which contains the id of the newly
@@ -201,7 +204,7 @@ public interface DALClient {
 	 * The value of the id is in the attribute with the name ATTR_VALUE. This
 	 * constant is <code>"ReturnId"</code>.
 	 */
-	static final String TAG_RETURN_ID = "ReturnId";
+	static final String TAG_RETURN_ID = "ReturnId"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_RETURN_ID record. The value of this
@@ -209,7 +212,7 @@ public interface DALClient {
 	 * a new record has been created within the <i>kddart</i> database. This
 	 * constant is <code>"ParaName"</code>.
 	 */
-	static final String ATTR_PARA_NAME = "ParaName";
+	static final String ATTR_PARA_NAME = "ParaName"; //$NON-NLS-1$
 
 	/**
 	 * This is the tag name for the record which contains the URL for the
@@ -217,14 +220,14 @@ public interface DALClient {
 	 * URL is in the attribute with the name ATTR_XML. This constant is
 	 * <code>"ReturnIdFile"</code>.
 	 */
-	static final String TAG_RETURN_ID_FILE = "ReturnIdFile";
+	static final String TAG_RETURN_ID_FILE = "ReturnIdFile"; //$NON-NLS-1$
 
 	/**
 	 * This is an attribute name for the TAG_RETURN_ID_FILE record. The value of
 	 * this attribute provides the URL for the uploaded file within the
 	 * <i>kddart</i> database. This constant is <code>"ReturnIdFile"</code>.
 	 */
-	static final String ATTR_XML = "xml";
+	static final String ATTR_XML = "xml"; //$NON-NLS-1$
 
 	/**
 	 * Return the base URL for the DAL server.
@@ -364,10 +367,32 @@ public interface DALClient {
 	 * </pre>
 	 * 
 	 * @param command
-	 * @return the QueryBuilder
+	 * @return QueryBuilder
 	 */
 	QueryBuilder prepareQuery(String command);
 
+	/**
+	 * Synonym for prepareQuery that is explicit that a GET will be used.
+	 * @param command
+	 * @return QueryBuilder
+	 */
+	QueryBuilder prepareGetQuery(String command);
+
+	/**
+	 * Prepare to perform a query command using the Fluent programming style.
+	 * For example:
+	 * 
+	 * <pre>
+	 * DalResponse response = client.preparePostQuery(&quot;list/genotype/_nperpage/page/_num&quot;)
+	 * 		.setParameter(&quot;_nperpage&quot;, 200).setParameter(&quot;_num&quot;, 1)
+	 *      .execute();
+	 * </pre>
+	 * 
+	 * @param command
+	 * @return PostBuilder
+	 */
+	PostBuilder preparePostQuery(String command);
+	
 	// - - - - - - - - - - - - - - - - - - - -
 
 	/**
@@ -520,7 +545,7 @@ public interface DALClient {
 	 * @param command
 	 * @return an UpdateBuilder instance
 	 */
-	UpdateBuilder prepareExport(String command);
+	PostBuilder prepareExport(String command);
 
 	/**
 	 * Perform an EXPORT command with the provided parameters. This is a

@@ -27,7 +27,7 @@ import javax.net.ssl.SSLContext;
 import org.apache.commons.collections15.Factory;
 
 import com.diversityarrays.dalclient.HttpResponseInfo;
-import com.diversityarrays.util.Pair;
+import com.diversityarrays.dalclient.util.Pair;
 
 /**
  * Provides the various factory methods required to create implementation specific instances

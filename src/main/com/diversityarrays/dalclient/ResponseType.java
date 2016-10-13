@@ -26,12 +26,12 @@ public enum ResponseType {
 	/**
 	 * The client should use XML to interact with the server.
 	 */
-	XML("xml"),
+	XML("xml"), //$NON-NLS-1$
 	
 	/**
 	 * The client should use JSON to interact with the server.
 	 */
-	JSON("json"),
+	JSON("json"), //$NON-NLS-1$
 	
 	/**
 	 * This ResponseType is only created for the results of some

@@ -89,7 +89,13 @@ import com.diversityarrays.dalclient.http.DalResponseHandler;
  */
 public class DalUtil {
 
-	/**
+	private static final String DIGEST_MD5 = "MD5"; //$NON-NLS-1$
+
+    private static final String ALGORITHM_HMAC_SHA1 = "HmacSHA1"; //$NON-NLS-1$
+
+    public static final String ENCODING_UTF_8 = "UTF-8"; //$NON-NLS-1$
+
+    /**
 	 * Get the version number of the DAL Client library.
 	 * @return String
 	 * @since 2.0
@@ -98,24 +104,24 @@ public class DalUtil {
 		return Main.VERSION;
 	}
 	
-	static public boolean DEBUG = Boolean.getBoolean(DalUtil.class.getName()+".DEBUG");
+	static public boolean DEBUG = Boolean.getBoolean(DalUtil.class.getName()+".DEBUG"); //$NON-NLS-1$
 	
 	/**
 	 * Use this with SimpleDateFormat for date/time values sent to DAL.
 	 */
-	static public final String DATE_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss";
+	static public final String DATE_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss"; //$NON-NLS-1$
 	
 
 	/**
 	 * This is the beginning of the standard DAL "permission denied" error.
 	 * (see getDalErrorMessage())
 	 */
-	static public final String PERMISSION_DENIED_LOCASE_STEM = "permission denied";
+	static public final String PERMISSION_DENIED_LOCASE_STEM = "permission denied"; //$NON-NLS-1$
 
 	/**
 	 * This is the Charset name used for crypto.
 	 */
-	static public String cryptCharsetName = "UTF-8";
+	static public String cryptCharsetName = ENCODING_UTF_8;
 	
 	/**
 	 * Compare two version number strings and return
@@ -127,10 +133,10 @@ public class DalUtil {
 	 */
 	static public int compareVersions(String a, String b) {
 
-		Pattern pattern = Pattern.compile("^([0-9]+)");
+		Pattern pattern = Pattern.compile("^([0-9]+)"); //$NON-NLS-1$
 
-		StringTokenizer st_a = new StringTokenizer(a, ".");
-		StringTokenizer st_b = new StringTokenizer(b, ".");
+		StringTokenizer st_a = new StringTokenizer(a, "."); //$NON-NLS-1$
+		StringTokenizer st_b = new StringTokenizer(b, "."); //$NON-NLS-1$
 
 		while (st_a.hasMoreTokens() && st_b.hasMoreTokens()) {
 			Matcher m = pattern.matcher(st_a.nextToken());
@@ -182,7 +188,7 @@ public class DalUtil {
 		} };
 
 		try {
-			final SSLContext sslContext = SSLContext.getInstance( "SSL" );
+			final SSLContext sslContext = SSLContext.getInstance( "SSL" ); //$NON-NLS-1$
 
 			// Install the all-trusting trust manager
 			sslContext.init( null, trustAllCerts, new java.security.SecureRandom() );
@@ -204,7 +210,7 @@ public class DalUtil {
 		String result = input;
 		
 		try {
-			result = URLEncoder.encode(input, "UTF-8");
+			result = URLEncoder.encode(input, ENCODING_UTF_8);
 		} catch (UnsupportedEncodingException e) {
 		}
 
@@ -219,7 +225,7 @@ public class DalUtil {
 	static public String urlDecodeUTF8(String input) {
 		String result = input;
 		try {
-			result = URLDecoder.decode(input, "UTF-8");
+			result = URLDecoder.decode(input, ENCODING_UTF_8);
 		} catch (UnsupportedEncodingException e) {
 		}
 		return result;
@@ -241,14 +247,15 @@ public class DalUtil {
 	throws DalMissingParameterException
 	{
 		StringBuilder sb = new StringBuilder();
-		String sep = prefix == null ? "" : prefix;
-		for (String p : commandTemplate.split("/")) {
+		String sep = prefix == null ? "" : prefix; //$NON-NLS-1$
+		for (String p : commandTemplate.split("/")) { //$NON-NLS-1$
 			sb.append(sep);
-			sep = "/";
-			if (p.startsWith("_")) {
+			sep = "/"; //$NON-NLS-1$
+			if (p.startsWith("_")) { //$NON-NLS-1$
 				String v = parameters.get(p);
 				if (v==null) {
-					throw new DalMissingParameterException("Missing value for '"+p+"' in command: "+commandTemplate);
+					throw new DalMissingParameterException(
+					        String.format("Missing value for '%s' in command: %s", p, commandTemplate)); //$NON-NLS-1$
 				}
 				sb.append(v);
 			}
@@ -300,10 +307,10 @@ public class DalUtil {
 		try {
 			if (DEBUG) {
 				URI uri = request.getURI();
-				System.err.println(DalUtil.class.getSimpleName()+".doHttp: "+uri.toString());
-				System.err.println("  --- Headers ---");
+				System.err.println(DalUtil.class.getSimpleName()+".doHttp: "+uri.toString()); //$NON-NLS-1$
+				System.err.println("  --- Headers ---"); //$NON-NLS-1$
 				for (DalHeader h : request.getAllHeaders()) {
-					System.err.println("\t"+h.getName()+":\t"+h.getValue());
+					System.err.println("\t"+h.getName()+":\t"+h.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 			long startMillis = System.currentTimeMillis();
@@ -331,9 +338,9 @@ public class DalUtil {
 	public static String computeHmacSHA1(String key, String data) {
 		try {
 			byte[] keyBytes = key.getBytes(cryptCharsetName);           
-			SecretKeySpec signingKey = new SecretKeySpec(keyBytes, "HmacSHA1");
+			SecretKeySpec signingKey = new SecretKeySpec(keyBytes, ALGORITHM_HMAC_SHA1);
 
-			Mac mac = Mac.getInstance("HmacSHA1");
+			Mac mac = Mac.getInstance(ALGORITHM_HMAC_SHA1);
 			mac.init(signingKey);
 
 			byte[] rawHmac = mac.doFinal(data.getBytes(cryptCharsetName));
@@ -377,7 +384,7 @@ public class DalUtil {
 		DigestInputStream dis = null;
 		Formatter formatter = null;
 		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
+			MessageDigest md = MessageDigest.getInstance(DIGEST_MD5);
 			dis = new DigestInputStream(input, md);
 			while (-1 != dis.read())
 				;
@@ -385,7 +392,7 @@ public class DalUtil {
 			byte[] digest = md.digest();
 			formatter = new Formatter();
 			for (byte b : digest) {
-				formatter.format("%02x", b);
+				formatter.format("%02x", b); //$NON-NLS-1$
 			}
 			return formatter.toString();
 		} catch (NoSuchAlgorithmException e) {
@@ -458,14 +465,24 @@ public class DalUtil {
 		 */
 		DalResponseRecord getFirstRecord(String key) throws DalResponseFormatException;
 
-		/**
-		 * Invoke the <code>visitor.visitResponseRow()</code> method for each result in the response.
-		 * @param visitor
-		 * @param wantedTagNames 
-		 * @return true if all records were visited
-		 * @throws DalResponseException
-		 */
-		boolean visitResults(DalResponseRecordVisitor visitor, List<String> wantedTagNames) throws DalResponseException;
+        /**
+         * Invoke the <code>visitor.visitResponseRow()</code> method for each result in the response.
+         * @param visitor
+         * @param wantedTagNames 
+         * @return true if all records were visited
+         * @throws DalResponseException
+         */
+        boolean visitResults(DalResponseRecordVisitor visitor, List<String> wantedTagNames) throws DalResponseException;
+
+        /**
+         * Invoke the <code>visitor.visitResponseRow()</code> method for each result in the response.
+         * @param visitor
+         * @param wantedTagNames 
+         * @param wantEmptyRecords
+         * @return true if all records were visited
+         * @throws DalResponseException
+         */
+        boolean visitResults(DalResponseRecordVisitor visitor, List<String> wantedTagNames, boolean wantEmptyRecords) throws DalResponseException;
 	}
 	
 	/**
@@ -523,24 +540,24 @@ public class DalUtil {
 			List<?> list = getListAt(DALClient.TAG_ERROR);
 			if (list!=null) {
 				if (list.isEmpty()) {
-					result = "Unknown error: missing element";
+					result = "Unknown error: missing element"; //$NON-NLS-1$
 				}
 				else {
 					Object item = list.get(0);
 					if (item==null) {
-						result = "Unknown error: 'null'";
+						result = "Unknown error: 'null'"; //$NON-NLS-1$
 					}
 					else if (item instanceof JsonMap) {
 						JsonMap errors = (JsonMap) item;
 						StringBuilder sb = new StringBuilder();
-						String sep = "";
+						String sep = ""; //$NON-NLS-1$
 						for (String key : errors.getKeysInOrder()) {
 							sb.append(sep).append(key).append('=').append(errors.get(key));
 						}
 						result = sb.toString();
 					}
 					else {
-						result = "Unknown error: 'Error' item is "+item.getClass().getName();
+						result = "Unknown error: 'Error' item is "+item.getClass().getName(); //$NON-NLS-1$
 					}
 				}
 			}
@@ -558,37 +575,44 @@ public class DalUtil {
 					result = createFrom(requestUrl, key, (JsonMap) item);
 				}
 				else {
-					throw new DalResponseFormatException("unexpected type for '"+key+"'[0] :"+item.getClass().getName());
+					throw new DalResponseFormatException(
+					        String.format("unexpected type for '%s'[0] : %s", key, item.getClass().getName())); //$NON-NLS-1$
 				}
 			}
 			
 			return result == null ? new DalResponseRecord(requestUrl, key) : result;
 		}
 
+	    @Override
+	    public boolean visitResults(DalResponseRecordVisitor visitor, List<String> wantedTagNames) throws DalResponseException {
+	        return visitResults(visitor, wantedTagNames, false);
+	    }
+
 		@Override
-		public boolean visitResults(DalResponseRecordVisitor visitor, List<String> wantedTagNames) throws DalResponseException {
-			
+		public boolean visitResults(DalResponseRecordVisitor visitor, List<String> wantedTagNames, boolean wantEmptyRecords)
+		throws DalResponseException 
+		{
 			boolean result = true;
 			
 			List<?> rmetaList = getListAt(DALClient.TAG_RECORD_META);
 			if (rmetaList==null || rmetaList.isEmpty()) {
-				throw new DalResponseException("missing RecordMeta in DAL response");
+				throw new DalResponseException("missing RecordMeta in DAL response"); //$NON-NLS-1$
 			}
 			
 			for (Object rmeta : rmetaList) {
 				if (! (rmeta instanceof JsonMap)) {
-					throw new DalResponseException("Invalid JSON structure in "+DALClient.TAG_RECORD_META);
+					throw new DalResponseException("Invalid JSON structure in "+DALClient.TAG_RECORD_META); //$NON-NLS-1$
 				}
 				JsonMap rmetaMap = (JsonMap) rmeta;
 				Object tagnameObj = rmetaMap.get(DALClient.ATTR_TAG_NAME);
 				if (tagnameObj==null) {
-					throw new DalResponseException("missing RecordMeta/TagName in DAL response");
+					throw new DalResponseException("missing RecordMeta/TagName in DAL response"); //$NON-NLS-1$
 				}
 				
 				String tagName = tagnameObj.toString();
 				List<?> list = getListAt(tagName);
 				if (list==null) {
-					throw new DalResponseException("missing entry for '"+tagName+"' in DAL response");
+					throw new DalResponseException(String.format("missing entry for '%s' in DAL response", tagName)); //$NON-NLS-1$
 				}
 				
 				int count = 0;
@@ -596,13 +620,17 @@ public class DalUtil {
 					if (item instanceof JsonMap) {
 						JsonMap jsonMap = (JsonMap) item;
 						DalResponseRecord record = createFrom(requestUrl, tagName, jsonMap);
-						if (! visitor.visitResponseRecord(tagName, record)) {
-							result = false;
-							break;
+						if (wantEmptyRecords || ! record.isEmpty()) {
+	                        if (! visitor.visitResponseRecord(tagName, record)) {
+	                            result = false;
+	                            break;
+	                        }
 						}
 					}
 					else {
-						throw new DalResponseFormatException("unexpected type for '"+tagName+"'["+count+"] :"+item.getClass().getName());
+						throw new DalResponseFormatException(
+						        String.format("unexpected type for '%s'[%d] :%s", //$NON-NLS-1$
+						                tagName, count, item.getClass().getName()));
 					}
 					++count;
 				}
@@ -639,7 +667,7 @@ public class DalUtil {
 			for (String key : keys) {
 				Object value = input.get(key);
 				if (value==null) {
-					result.rowdata.put(key, "");
+					result.rowdata.put(key, ""); //$NON-NLS-1$
 				}
 				else if (value instanceof List) {
 						List<?> list = (List<?>) value;
@@ -653,7 +681,8 @@ public class DalUtil {
 								}
 							}
 							else {
-								result.warnings.add("unexpected value-type for '"+key+"'["+count+"] :"+elem.getClass());
+								result.warnings.add(String.format("unexpected value-type for '%s'[%d] :%s", //$NON-NLS-1$
+								        key, count, elem.getClass().getName()));
 							}
 						}
 						++count;
@@ -662,7 +691,8 @@ public class DalUtil {
 					result.rowdata.put(key, value.toString());
 				}
 				else {
-					result.warnings.add("unexpected value-type for '"+key+"' :"+value.getClass());
+					result.warnings.add(String.format("unexpected value-type for '%s' :%s", //$NON-NLS-1$
+					        key, value.getClass().getName()));
 				}
 			}
 		}
@@ -685,7 +715,7 @@ public class DalUtil {
 			for (String key : keys) {
 				Object value = input.get(key);
 				if (value==null) {
-					result.put(key, "");
+					result.put(key, ""); //$NON-NLS-1$
 				}
 				else if (value instanceof List) {
 					// Hmmm. 
@@ -717,8 +747,22 @@ public class DalUtil {
 		Document xmldoc = builder.parse(is);
 		return xmldoc;
 	}
+	public static boolean visitXmlResults(
+            String requestUrl, 
+            Document xmldoc, 
+            List<String> tagNames, 
+            DalResponseRecordVisitor visitor) 
+    {
+	    return visitXmlResults(requestUrl, xmldoc, tagNames, visitor, false);
+    }
 	
-	public static boolean visitXmlResults(String requestUrl, Document xmldoc, List<String> tagNames, DalResponseRecordVisitor visitor) {
+	public static boolean visitXmlResults(
+	        String requestUrl, 
+	        Document xmldoc, 
+	        List<String> tagNames, 
+	        DalResponseRecordVisitor visitor,
+	        boolean wantEmptyRecords) 
+	{
 		boolean result = true;
 		for (String tagName : tagNames) {
 			NodeList resultNodes = xmldoc.getElementsByTagName(tagName);
@@ -726,7 +770,7 @@ public class DalUtil {
 			for (int ni = 0; ni < nNodes; ++ni) {
 				Node node = resultNodes.item(ni);
 				DalResponseRecord record = DalUtil.createFrom(requestUrl, node);
-				if (record != null) {
+				if (record != null && (wantEmptyRecords || ! record.isEmpty())) {
 					if (! visitor.visitResponseRecord(tagName, record)) {
 						result = false;
 						break;
@@ -795,9 +839,9 @@ public class DalUtil {
 		}
 		else {
 			try {
-				showXmlResult(xml, new OutputStreamWriter(out, "UTF-8"));
+				showXmlResult(xml, new OutputStreamWriter(out, ENCODING_UTF_8));
 			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException("Should never happen!", e);
+				throw new RuntimeException("Should never happen!", e); //$NON-NLS-1$
 			}
 		}
 	}
@@ -846,11 +890,11 @@ public class DalUtil {
 	    TransformerFactory tf = TransformerFactory.newInstance();
 	    
 	    Transformer transformer = tf.newTransformer();
-	    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-	    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-	    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+	    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no"); //$NON-NLS-1$
+	    transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
+	    transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+	    transformer.setOutputProperty(OutputKeys.ENCODING, ENCODING_UTF_8);
+	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	    transformer.transform(source, new StreamResult(w));
 	}
@@ -860,11 +904,11 @@ public class DalUtil {
 	    TransformerFactory tf = TransformerFactory.newInstance();
 	    
 	    Transformer transformer = tf.newTransformer();
-	    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-	    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-	    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+	    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no"); //$NON-NLS-1$
+	    transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
+	    transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+	    transformer.setOutputProperty(OutputKeys.ENCODING, ENCODING_UTF_8);
+	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
 	    
 
 	    transformer.transform(new DOMSource(doc), 
@@ -881,12 +925,12 @@ public class DalUtil {
 		String errmsg = null;
 		if (t instanceof DalResponseHttpException) {
 			DalResponseHttpException he = (DalResponseHttpException) t;
-			System.out.println("serverResponse=" + he.responseInfo.serverResponse);
-			System.out.println("dalErrorMessage='" + he.dalErrorMessage + "'");
+			System.out.println("serverResponse=" + he.responseInfo.serverResponse); //$NON-NLS-1$
+			System.out.println("dalErrorMessage='" + he.dalErrorMessage + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 
-			Matcher m = Pattern.compile("^.*Message=(.*)$").matcher(he.dalErrorMessage);
+			Matcher m = Pattern.compile("^.*Message=(.*)$").matcher(he.dalErrorMessage); //$NON-NLS-1$
 			if (m.matches()) {
-				System.out.println("Message is '" + m.group(1) + "'");
+				System.out.println("Message is '" + m.group(1) + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 				errmsg = m.group(1);
 			} else {
 				errmsg = he.dalErrorMessage;
@@ -920,18 +964,18 @@ public class DalUtil {
 			Node item = errorElements.item(0);
 			NamedNodeMap attributes = item.getAttributes();
 			if (attributes==null) {
-				result = "No attributes available in 'Error' element";
+				result = "No attributes available in 'Error' element"; //$NON-NLS-1$
 			}
 			else {
 				// We will get them *all*.
 				StringBuilder sb = new StringBuilder();
-				String sep = "";
+				String sep = ""; //$NON-NLS-1$
 				int nAttributes = attributes.getLength();
 				for (int ai = 0; ai < nAttributes; ++ai) {
 					Node attr = attributes.item(ai);
 					if  (attr != null) {
 						sb.append(sep).append(attr.getNodeName()).append('=').append(attr.getTextContent());
-						sep = ", ";
+						sep = ", "; //$NON-NLS-1$
 					}
 				}
 				result = sb.toString();
@@ -1000,7 +1044,7 @@ public class DalUtil {
 	 */
 	public static boolean looksLikeDoctype(String input) {
 		// this should handle the "<!ENTITY" form currently seen as well as potentially future "<!DOCTYPE"
-		return input!=null && input.startsWith("<!");
+		return input!=null && input.startsWith("<!"); //$NON-NLS-1$
 	}
 
 	public static boolean isHttpStatusCodeOk(int httpStatusCode) {
@@ -1082,7 +1126,7 @@ public class DalUtil {
 
 	static public String join(String sep, Object... parts) {
 		StringBuilder sb = new StringBuilder();
-		String s = "";
+		String s = ""; //$NON-NLS-1$
 		for (Object o : parts) {
 			sb.append(s);
 			if (o!=null) {
@@ -1096,7 +1140,7 @@ public class DalUtil {
 
 	static public String join(String sep, Collection<?> parts) {
 		StringBuilder sb = new StringBuilder();
-		String s = "";
+		String s = ""; //$NON-NLS-1$
 		for (Object o : parts) {
 			sb.append(s);
 			if (o!=null) {

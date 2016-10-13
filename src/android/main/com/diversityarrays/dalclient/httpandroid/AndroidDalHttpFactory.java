@@ -48,8 +48,7 @@ import com.diversityarrays.dalclient.http.DalCloseableHttpResponse;
 import com.diversityarrays.dalclient.http.DalHttpFactory;
 import com.diversityarrays.dalclient.http.DalRequest;
 import com.diversityarrays.dalclient.http.DalResponseHandler;
-
-import com.diversityarrays.util.Pair;
+import com.diversityarrays.dalclient.util.Pair;
 
 public class AndroidDalHttpFactory implements DalHttpFactory {
 

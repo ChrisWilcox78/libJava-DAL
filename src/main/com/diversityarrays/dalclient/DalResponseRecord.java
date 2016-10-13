@@ -73,9 +73,18 @@ public class DalResponseRecord {
 	
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName()+"[nrows="+rowdata.size()+" from "+requestUrl+"]";
+		return this.getClass().getSimpleName()+"[nrows="+rowdata.size()+" from "+requestUrl+"]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	
+    public boolean isEmpty() {
+        if (rowdata.isEmpty()) {
+            if (nestedData.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 	public void addNestedData(String tag, Map<String,String> rowdata) {
 		List<Map<String, String>> list = nestedData.get(tag);
 		if (list==null) {
@@ -84,4 +93,5 @@ public class DalResponseRecord {
 		}
 		list.add(rowdata);
 	}
+
 }

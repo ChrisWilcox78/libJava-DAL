@@ -73,14 +73,14 @@ public class XmlDalResponse extends AbstractDalResponse {
 				long elapsed = System.currentTimeMillis();
 				String rawResponse = getRawResponse();
 				if (DalUtil.looksLikeDoctype(rawResponse)) {
-					throw new DalResponseFormatException("response is a DTD");
+					throw new DalResponseFormatException("response is a DTD"); //$NON-NLS-1$
 				}
 				savedXmldoc = DalUtil.createXmlDocument(rawResponse);
 
 				if (SHOW_TIMING) {
 					elapsed = System.currentTimeMillis() - elapsed;
-					System.err.println(this.getClass().getName()+"_parseResult: url="+getUrl());
-					System.err.println("\tserver ms="+getHttpResponseInfo().elapsedMillis+"\txml parse ms="+elapsed);
+					System.err.println(this.getClass().getName()+"_parseResult: url="+getUrl()); //$NON-NLS-1$
+					System.err.println("\tserver ms="+getHttpResponseInfo().elapsedMillis+"\txml parse ms="+elapsed); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			} catch (ParserConfigurationException e) {
 				throw new DalResponseFormatException(e);
@@ -125,7 +125,7 @@ public class XmlDalResponse extends AbstractDalResponse {
 		NodeList recordMetaNodelist = xmldoc.getElementsByTagName(DALClient.TAG_RECORD_META);
 		int nRecordMeta = recordMetaNodelist.getLength();
 		if (nRecordMeta<=0) {
-			throw new DalResponseException("no RecordMeta seen in HTTP response");
+			throw new DalResponseException("no RecordMeta seen in HTTP response"); //$NON-NLS-1$
 		}
 
 		for (int rmi = 0; rmi < nRecordMeta; ++rmi) {
@@ -133,7 +133,7 @@ public class XmlDalResponse extends AbstractDalResponse {
 			NamedNodeMap rmAttributes = rmNode.getAttributes();
 			Node tagNameNode = rmAttributes.getNamedItem(DALClient.ATTR_TAG_NAME);
 			if (tagNameNode==null) {
-				throw new DalResponseException("no RecordMeta/TagName seen in HTTP response ("+rmi+")");
+				throw new DalResponseException("no RecordMeta/TagName seen in HTTP response ("+rmi+")");  //$NON-NLS-1$//$NON-NLS-2$
 			}
 			result.add(tagNameNode.getNodeValue());
 		}
@@ -165,7 +165,7 @@ public class XmlDalResponse extends AbstractDalResponse {
 			}
 		}
 		
-		return DalUtil.visitXmlResults(getUrl(), xmldoc, tagNames, visitor);
+		return DalUtil.visitXmlResults(getUrl(), xmldoc, tagNames, visitor, getWantEmptyRecords());
 	}
 
 
@@ -188,7 +188,7 @@ public class XmlDalResponse extends AbstractDalResponse {
 			tagNames = Arrays.asList(wantedTagNames);
 		}
 
-		return DalUtil.visitXmlResults(getUrl(), xmldoc, tagNames, visitor);
+		return DalUtil.visitXmlResults(getUrl(), xmldoc, tagNames, visitor, getWantEmptyRecords());
 	}
 
 

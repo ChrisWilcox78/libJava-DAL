@@ -17,30 +17,11 @@
  */
 package com.diversityarrays.dalclient;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Map;
-
-import org.apache.commons.collections15.Closure;
-
-import com.diversityarrays.util.Pair;
-
 /**
- * This helper interface is used by DALClient to provide a "fluent"
- * style of preparing and executing update or upload commands.
- * @author brian
+ * Synonym for PostBuilder to provide backwards compatability.
+ * @author brianp
  *
  */
-public interface UpdateBuilder {
-	
-	UpdateBuilder addPostParameter(String name, String value);
-	UpdateBuilder addPostParameter(String name, Number value);
-	UpdateBuilder addPostParameters(Map<String,String> postParams);
-	
-	DalResponse execute() throws IOException, DalResponseException;
-	
-	UpdateBuilder visitPostParameters(Closure<Pair<String,String>> visitor);
-	
-	// For debugging
-	UpdateBuilder printOn(PrintStream ps);
+public interface UpdateBuilder extends PostBuilder {
+
 }

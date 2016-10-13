@@ -64,8 +64,8 @@
 	        <src path="${src-pearcan.dir}" />
 
 	        <include name="com/diversityarrays/dalclient/*.java" />
+	        <include name="com/diversityarrays/dalclient/util/*.java" />
 	        <include name="com/diversityarrays/dalclient/http/*.java" />
-	        <include name="com/diversityarrays/util/*.java" />
 
 	        <include name="net/pearcan/json/*.java" />
 	    </javac>
@@ -97,8 +97,8 @@
 	        <src path="${src-android.dir}" />
 
 	        <include name="com/diversityarrays/dalclient/httpandroid/*.java" />
+	        <include name="com/diversityarrays/dalclient/util/*.java" />
 	        <include name="com/diversityarrays/daldb/*.java" />
-	        <include name="com/diversityarrays/util/*.java" />
 
 	    </javac>
 

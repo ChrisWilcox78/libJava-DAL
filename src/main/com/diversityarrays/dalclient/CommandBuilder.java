@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -43,12 +44,12 @@ import java.util.Map;
  */
 public class CommandBuilder implements QueryBuilder {
 
-	private static final String ENCODING_CHARSETNAME = "UTF-8";
+	private static final String ENCODING_CHARSETNAME = "UTF-8"; //$NON-NLS-1$
 
 	private String prefix;
 	private String commandPattern;
-	private Map<String,String> parameters = new HashMap<String, String>();
-	private String filterClause;
+	private Map<String,String> parameters = new HashMap<String,String>();
+	private Map<OperationKeyword,String> methodParams = new LinkedHashMap<OperationKeyword,String>();
 	private final DALClient dalClient;
 
 	/**
@@ -97,18 +98,44 @@ public class CommandBuilder implements QueryBuilder {
 	
 	@Override
 	public QueryBuilder setFilterClause(String filter) {
-		this.filterClause = filter;
+	    if (filter == null || filter.isEmpty()) {
+	        methodParams.remove(OperationKeyword.FILTERING);
+	    }
+	    else {
+	        methodParams.put(OperationKeyword.FILTERING, filter);
+	    }
+		return this;
+	}
+	
+	@Override
+	public QueryBuilder addKeywordClause(OperationKeyword keyword, String clause) {
+		if (clause != null && ! clause.isEmpty()) {
+			methodParams.put(keyword, clause);
+		}
+		return this;
+	}
+	
+	@Override
+	public QueryBuilder addKeywordClauses(Map<OperationKeyword,String> clauses) {
+		if (clauses != null && ! clauses.isEmpty()) {
+			for (OperationKeyword kwd : clauses.keySet()) {
+				String value = clauses.get(kwd);
+				if (value != null && ! value.isEmpty()) {
+					methodParams.put(kwd, value);
+				}
+			}
+		}
 		return this;
 	}
 	
 	@Override
 	public String build() throws DalMissingParameterException {
 		StringBuilder sb = new StringBuilder();
-		String sep = prefix == null ? "" : prefix;
-		for (String p : commandPattern.split("/")) {
+		String sep = prefix == null ? "" : prefix; //$NON-NLS-1$
+		for (String p : commandPattern.split("/")) { //$NON-NLS-1$
 			sb.append(sep);
-			sep = "/";
-			if (p.startsWith("_")) {
+			sep = "/"; //$NON-NLS-1$
+			if (p.startsWith("_")) { //$NON-NLS-1$
 				String v = parameters.get(p);
 				if (v==null) {
 					throw new DalMissingParameterException("Missing value for '"+p+"' in command: "+commandPattern);
@@ -120,11 +147,22 @@ public class CommandBuilder implements QueryBuilder {
 			}
 		}
 		
-		if (filterClause!=null && ! filterClause.isEmpty()) {
-			try {
-				sb.append("?").append(DALClient.FILTERING_KEYWORD).append("=").append(URLEncoder.encode(filterClause, ENCODING_CHARSETNAME));
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(e);
+		if (! methodParams.isEmpty()) {
+			String join = "?"; //$NON-NLS-1$
+			for (OperationKeyword kwd : methodParams.keySet()) {
+				try {
+					String value = methodParams.get(kwd);
+					if (value != null && ! value.isEmpty()) {
+						sb.append(join)
+							.append(kwd.value)
+							.append("=") //$NON-NLS-1$
+							.append(URLEncoder.encode(value, ENCODING_CHARSETNAME));
+						
+						join = "&"; //$NON-NLS-1$
+					}
+				} catch (UnsupportedEncodingException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}
 		

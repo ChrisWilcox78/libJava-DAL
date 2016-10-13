@@ -28,11 +28,11 @@ public enum SessionExpiryOption {
 	 * The DAL server will allow the session to continue as active until
 	 * it is explicitly logged-out.
 	 */
-	EXPLICIT_LOGOUT("yes", "Explicit Logout"),
+	EXPLICIT_LOGOUT("yes", "Explicit Logout"), //$NON-NLS-1$
 	/**
 	 * The DAL server will cause the session to timeout after a period of inactivity.
 	 */
-	AUTO_EXPIRE("no", "Auto Expire");
+	AUTO_EXPIRE("no", "Auto Expire"); //$NON-NLS-1$
 	
 	public final String urlValue;
 	public final String displayName;

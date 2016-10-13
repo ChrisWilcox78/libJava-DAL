@@ -54,11 +54,27 @@ public interface QueryBuilder {
 
 	/**
 	 * Set the filter clause which will returned after the template components
-	 * and URL-encoded.
+	 * and URL-encoded. This is the same as using <code>addKeywordClause(OperationKeyword.FILTERING, filter)</code>.
 	 * @param filter
 	 * @return this QueryBuilder
 	 */
 	public QueryBuilder setFilterClause(String filter);
+
+	/**
+	 * Add a value for the given OperationKeyword if the clause is a non-empty String.
+	 * A null String is treated as empty.
+	 * @param keyword 
+	 * @param clause String 
+	 * @return this QueryBuilder
+	 */
+	public QueryBuilder addKeywordClause(OperationKeyword keyword, String clause);
+	
+	/**
+	 * Add all of the clauses.
+	 * @param clauses a possibly null or empty Map
+	 * @return this QueryBuilder
+	 */
+	public QueryBuilder addKeywordClauses(Map<OperationKeyword,String> clauses);
 
 	/**
 	 * Construct and return the DAL operation complete with Filtering clause if requested.
@@ -75,4 +91,5 @@ public interface QueryBuilder {
 	 * @throws DalMissingParameterException
 	 */
 	public DalResponse execute() throws IOException, DalResponseException, DalMissingParameterException;
+
 }

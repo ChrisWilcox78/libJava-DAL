@@ -31,7 +31,7 @@ import com.diversityarrays.dalclient.DalResponse;
 import com.diversityarrays.dalclient.DalResponseException;
 import com.diversityarrays.dalclient.DalResponseRecord;
 import com.diversityarrays.dalclient.DalResponseRecordVisitor;
-import com.diversityarrays.util.Pair;
+import com.diversityarrays.dalclient.util.Pair;
 
 public class TrialUtils {
 	/**

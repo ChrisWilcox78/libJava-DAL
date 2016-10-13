@@ -1,0 +1,23 @@
+Changes in 5.0.0
+
+Moved Pair and StringInputStreaam to com.diversityarrays.dalclient.util
+so that they don't conflict with other android development libraries.
+
+Added wantEmptyRecords to DalResponse with getter/setter to support some
+server code in a customer that insisted on returning empty data records.
+This change makes DalResponse.visitResults() call the DalResponseRecordVisitor
+with the empty records if the value is set to true.
+
+A null or empty filterClause parameter to CommandBuilder.setFilterClause(...)
+removes the extant filtering clause from the command being constructed.
+
+Introduce OperationKeyword and addKeywordClause() and addKeywordClauses(...)
+methods to CommandBuilder/QueryBuilder
+
+Introduce UpdateBuilder as an extension of PostBuilder.
+
+---
+Note that we are still using the collections-generic library and not
+Java8's java.util.function package because those are not supported on
+the Android platform and this library needs to be available there.
+---

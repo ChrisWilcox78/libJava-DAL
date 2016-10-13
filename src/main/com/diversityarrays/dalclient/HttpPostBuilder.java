@@ -30,7 +30,7 @@ import org.apache.commons.logging.Log;
 
 import com.diversityarrays.dalclient.http.DalHttpFactory;
 import com.diversityarrays.dalclient.http.DalRequest;
-import com.diversityarrays.util.Pair;
+import com.diversityarrays.dalclient.util.Pair;
 
 /**
  * <p>
@@ -49,8 +49,8 @@ import com.diversityarrays.util.Pair;
  */
 public class HttpPostBuilder {
 	
-	private static final Charset ISO_8859_1 = Charset.forName("ISO-8859-1");
-	private static final Charset UTF_8 = Charset.forName("UTF-8");
+	private static final Charset ISO_8859_1 = Charset.forName("ISO-8859-1"); //$NON-NLS-1$
+	private static final Charset UTF_8 = Charset.forName("UTF-8"); //$NON-NLS-1$
 	
 	private DalHttpFactory dalHttpFactory;
 	private String dalCommandUrl;
@@ -124,7 +124,7 @@ public class HttpPostBuilder {
 		// Only need to add the ctype parameter if not XML because XML
 		// is the DAL server's default response format.
 		if (! responseType.isXML()) {
-			collectedPairs.add(new Pair<String,String>("ctype", responseType.postValue));
+			collectedPairs.add(new Pair<String,String>("ctype", responseType.postValue)); //$NON-NLS-1$
 		}
 		
 		DalRequest result = dalHttpFactory.createHttpPost(dalCommandUrl, collectedPairs, UTF_8);
@@ -162,7 +162,7 @@ public class HttpPostBuilder {
 			if (value==null) {
 				// When last tested, null values are not handled correctly so make them "empty"
 				// (for a start, the signature string gets befuddled with 'null')
-				value = "";
+				value = ""; //$NON-NLS-1$
 			}
 			dataForSignature.append(value);
 			namesInOrder.append(pair.a).append(',');
@@ -176,19 +176,19 @@ public class HttpPostBuilder {
 
 		List<Pair<String,String>> forPost = new ArrayList<Pair<String,String>>(collectedPairs);
 		
-		forPost.add(new Pair<String,String>("rand_num", rand_num));
-		forPost.add(new Pair<String,String>("url", dalCommandUrl));
-		forPost.add(new Pair<String,String>("param_order", namesInOrder.toString()));
-		forPost.add(new Pair<String,String>("signature", signature));
+		forPost.add(new Pair<String,String>("rand_num", rand_num)); //$NON-NLS-1$
+		forPost.add(new Pair<String,String>("url", dalCommandUrl)); //$NON-NLS-1$
+		forPost.add(new Pair<String,String>("param_order", namesInOrder.toString())); //$NON-NLS-1$
+		forPost.add(new Pair<String,String>("signature", signature)); //$NON-NLS-1$
 
 		if (! responseType.isXML()) {
-			forPost.add(new Pair<String,String>("ctype", responseType.postValue));
+			forPost.add(new Pair<String,String>("ctype", responseType.postValue)); //$NON-NLS-1$
 		}
 		
 		if (log!=null && log.isDebugEnabled()) {
-			log.debug(this.getClass().getName() + ".collectPairsForUpdate("+writeKey+")");
+			log.debug(this.getClass().getName() + ".collectPairsForUpdate("+writeKey+")"); //$NON-NLS-1$ //$NON-NLS-2$
 			for (Pair<String,String> nvp : forPost) {
-				log.debug("  "+nvp.a+"="+nvp.b);
+				log.debug("  "+nvp.a+"="+nvp.b); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		
@@ -225,11 +225,11 @@ public class HttpPostBuilder {
 		String signature = DalUtil.computeHmacSHA1(writeKey, dataForSignature.toString());
 		
 		if (log!=null && log.isDebugEnabled()) {
-			log.debug(this.getClass().getName() + ".buildForUpload("+writeKey+" , File=" + fileForUpload.getPath() + ")");
-			log.debug("  dataForSignature="+dataForSignature);
-			log.debug("  param_order="+namesInOrder);
-			log.debug("  signature="+signature);
-			log.debug("  fileSize="+fileForUpload.length());
+			log.debug(this.getClass().getName() + ".buildForUpload("+writeKey+" , File=" + fileForUpload.getPath() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			log.debug("  dataForSignature="+dataForSignature); //$NON-NLS-1$
+			log.debug("  param_order="+namesInOrder); //$NON-NLS-1$
+			log.debug("  signature="+signature); //$NON-NLS-1$
+			log.debug("  fileSize="+fileForUpload.length()); //$NON-NLS-1$
 		}
 		
 		return dalHttpFactory.createForUpload(dalCommandUrl, collectedPairs, rand_num, namesInOrder, signature, fileForUpload);
@@ -263,10 +263,10 @@ public class HttpPostBuilder {
 		String signature = DalUtil.computeHmacSHA1(writeKey, dataForSignature.toString());
 
 		if (log!=null && log.isDebugEnabled()) {
-			log.debug(this.getClass().getName() + ".buildForUpload("+writeKey+" , InputStream )");
-			log.debug("  dataForSignature="+dataForSignature);
-			log.debug("  param_order="+namesInOrder);
-			log.debug("  signature="+signature);
+			log.debug(this.getClass().getName() + ".buildForUpload("+writeKey+" , InputStream )"); //$NON-NLS-1$ //$NON-NLS-2$
+			log.debug("  dataForSignature="+dataForSignature); //$NON-NLS-1$
+			log.debug("  param_order="+namesInOrder); //$NON-NLS-1$
+			log.debug("  signature="+signature); //$NON-NLS-1$
 		}
 
 		return dalHttpFactory.createForUpload(dalCommandUrl, collectedPairs, rand_num, namesInOrder, signature, factory);	

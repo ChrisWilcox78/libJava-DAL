@@ -20,7 +20,55 @@ package com.diversityarrays.dalclient;
 /**
  * Versions:
  * <dl>
- * 
+ * <dt>5.0.0</dt>
+ * <ul>
+ *   <li>
+ *     Moved Pair and StringInputStreaam to com.diversityarrays.dalclient.util so that they
+ *     don't conflict with other android development libraries.
+ *   </li>
+ *   <li>
+ *     Added <code>wantEmptyRecords</code> to DalResponse with getter/setter.
+ *     This change makes <code>DalResponse.visitResults()</code> call the 
+ *     <code>DalResponseRecordVisitor</code>
+ *     with the empty records if the value is set to true.
+ *   </li>
+ *   <li>
+ *     A null or empty filterClause parameter to <code>CommandBuilder.setFilterClause(...)</code>
+ *     removes the extant filtering clause from the command being constructed.
+ *   </li>
+ *   <li>
+ *     Introduce <code>OperationKeyword</code> and
+ *     <code>addKeywordClause()</code> and <code>addKeywordClauses(...)</code> methods to
+ *     <code>CommandBuilder/QueryBuilder</code> 
+ *   </li>
+ *   <li>
+ *     Introduce UpdateBuilder as an extension of PostBuilder.
+ *   </li>
+ * </ul>
+ * <dd>
+ * </dd>
+ * <dt>4.0.1</dt>
+ * <dd>
+ * Empty or null filter in CommandBuilder removes the filter.
+ * <p>
+ * Add <code>DalResponse.(set|get)WantEmptyRecords</code> with default of <code>false</code>
+ * so that empty data records in the DalResponse are not provided to the visitor.
+ * </dd>
+ * <dt>4.0.0</dt>
+ * <dd>
+ * Introduce PostBuilder so that query commands can be performed
+ * using POST instead of GET.
+ * (UpdateBuilder is retained as a synonym).
+ * </dd>
+ * <dt>3.1.1</dt>
+ * <dd>
+ * Fix handling of null value for OperationKeyword in CommandBuilder.
+ * </dd>
+ * <dt>3.1.0</dt>
+ * <dd>
+ * Introduce <code>QueryBuilder.addKeywordClause()</code> and the enum
+ * <code>OperationKeyword</code> to support the other
+ * </dd>
  * <dt>3.0.0</dt>
  * <dd>
  * <p>
@@ -36,10 +84,10 @@ package com.diversityarrays.dalclient;
  */
 public class Main {
 	
-	static public final String VERSION = "3.0.0";
+	static public final String VERSION = "5.0.0"; //$NON-NLS-1$
 
 	static public void main(String[] args) {
-		System.out.println("DAL client library version "+VERSION);
+		System.out.println("DAL client library version "+VERSION); //$NON-NLS-1$
 		System.exit(0);
 	}
 }

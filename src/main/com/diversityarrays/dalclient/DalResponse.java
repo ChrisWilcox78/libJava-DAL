@@ -68,18 +68,10 @@ public interface DalResponse {
 	 * @throws DalResponseFormatException
 	 */
 	String getResponseErrorMessage() throws DalResponseFormatException;
-	
-//	/**
-//	 * Invoke the visitor for each "record" in the response data while the visitor
-//	 * returns true. The <i>tagname</i> of the record is provided
-//	 * in the call to the visitor.
-//	 * If the visitor ever returns false, do not continue with any remaining records.
-//	 * @param visitor
-//	 * @return true unless the visitor ever returns false
-//	 * @throws DalResponseException if the DAL response contains an error message
-//	 */
-//	boolean visitResults(DalResponseVisitor visitor) throws DalResponseFormatException, DalResponseException;
 
+	void setWantEmptyRecords(boolean b);
+	boolean getWantEmptyRecords();
+	
 	/**
 	 * Invoke the visitor for each "record" in the response data while the visitor
 	 * returns true. The <i>tagname</i> of the record is provided

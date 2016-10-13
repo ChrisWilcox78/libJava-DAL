@@ -61,16 +61,16 @@ import java.util.regex.Pattern;
  */
 public class CsvDalResponse extends AbstractDalResponse {
 
-	public static final String FIELD_CSVLINE = "csvline";
+	public static final String FIELD_CSVLINE = "csvline"; //$NON-NLS-1$
 	/**
 	 * This is a dummy tagname to allow visitResults() to give something back to the visitor.
 	 */
-	public static final String TAGNAME_CSVDATA = "csvdata";
+	public static final String TAGNAME_CSVDATA = "csvdata"; //$NON-NLS-1$
 	
 	private boolean useHeadings;
 	private String[] headings;
 	
-	private String headingsPrefix = "#";
+	private String headingsPrefix = "#"; //$NON-NLS-1$
 	private char quoteCharacter = '"';
 	private char columnSeparator = ',';
 
@@ -126,7 +126,7 @@ public class CsvDalResponse extends AbstractDalResponse {
 			}
 			
 			if (headingsPrefix != null && ! headingsPrefix.isEmpty()) {
-				Pattern p = Pattern.compile("^"+Pattern.quote(headingsPrefix)+"(.*)$");
+				Pattern p = Pattern.compile("^"+Pattern.quote(headingsPrefix)+"(.*)$"); //$NON-NLS-1$ //$NON-NLS-2$
 				Matcher m = p.matcher(line);
 				if (m.matches()) {
 					line = m.group(1);
@@ -215,7 +215,7 @@ public class CsvDalResponse extends AbstractDalResponse {
 						
 						int maxidx = Math.max(nFields, headings.length);
 						for (int idx = 0; idx < maxidx; ++idx) {
-							String h = (idx < nHeadings) ? headings[idx] : "column-"+idx;
+							String h = (idx < nHeadings) ? headings[idx] : "column-"+idx; //$NON-NLS-1$
 							String v = (idx < nFields) ? fields[idx] : null;
 							rr.rowdata.put(h, v);
 						}

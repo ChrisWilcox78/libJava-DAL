@@ -47,7 +47,7 @@ import com.diversityarrays.dalclient.http.DalCloseableHttpResponse;
 import com.diversityarrays.dalclient.http.DalHttpFactory;
 import com.diversityarrays.dalclient.http.DalRequest;
 import com.diversityarrays.dalclient.http.DalResponseHandler;
-import com.diversityarrays.util.Pair;
+import com.diversityarrays.dalclient.util.Pair;
 
 /**
  * Provide an implementation of DalHttpFactory for use with standard apache http libraries.
@@ -94,9 +94,13 @@ public class DalHttpFactoryImpl implements DalHttpFactory {
 	
 
 	@Override
-	public DalRequest createForUpload(String url, List<Pair<String,String>> pairs, String rand_num, String namesInOrder, String signature, File fileForUpload) {
-
-		
+	public DalRequest createForUpload(String url, 
+	        List<Pair<String,String>> pairs, 
+	        String rand_num, 
+	        String namesInOrder, 
+	        String signature, 
+	        File fileForUpload) 
+	{
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 		for (Pair<String,String> pair : pairs) {
 			builder.addTextBody(pair.a, pair.b);
@@ -120,8 +124,11 @@ public class DalHttpFactoryImpl implements DalHttpFactory {
 
 
 	@Override
-	public DalRequest createForUpload(String url, List<Pair<String,String>> pairs,
-			String rand_num, String namesInOrder, String signature,
+	public DalRequest createForUpload(String url, 
+	        List<Pair<String,String>> pairs,
+			String rand_num, 
+			String namesInOrder, 
+			String signature,
 			Factory<InputStream> factory) 
 	{
 		

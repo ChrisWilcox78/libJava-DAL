@@ -55,13 +55,13 @@ public class JsonDalResponse extends AbstractDalResponse {
 
 			if (SHOW_TIMING) {
 				elapsed = System.currentTimeMillis() - elapsed;
-				System.err.println(this.getClass().getName()+"_parseResult: url="+getUrl());
-				System.err.println("\tserver ms="+getHttpResponseInfo().elapsedMillis+"\tjson parse ms="+elapsed);
+				System.err.println(this.getClass().getName()+"_parseResult: url="+getUrl()); //$NON-NLS-1$
+				System.err.println("\tserver ms="+getHttpResponseInfo().elapsedMillis+"\tjson parse ms="+elapsed); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			if (savedJsonResult==null) {
 				String first50 = raw.substring(0, Math.min(raw.length(), 50));
-				String ellipsis = (raw.length() > first50.length()) ? "..." : "";
+				String ellipsis = (raw.length() > first50.length()) ? "..." : ""; //$NON-NLS-1$ //$NON-NLS-2$
 				throw new DalResponseFormatException("Invalid JSON result: '"+first50+ellipsis+"'");
 			}
 		}
@@ -100,7 +100,7 @@ public class JsonDalResponse extends AbstractDalResponse {
 				tagNames = new ArrayList<String>(wantedTagNames);
 			}
 		}
-		result = jsonResult.visitResults(visitor, tagNames);
+		result = jsonResult.visitResults(visitor, tagNames, getWantEmptyRecords());
 		
 		return result;
 	}
@@ -122,7 +122,7 @@ public class JsonDalResponse extends AbstractDalResponse {
 		if (wantedTagNames!=null && wantedTagNames.length>0) {
 			tagNames = Arrays.asList(wantedTagNames);
 		}
-		result = jsonResult.visitResults(visitor, tagNames);
+		result = jsonResult.visitResults(visitor, tagNames, getWantEmptyRecords());
 
 		return result;
 	}
@@ -134,7 +134,7 @@ public class JsonDalResponse extends AbstractDalResponse {
 
 	@Override
 	public String getResponseErrorMessage() throws DalResponseFormatException {
-		return getJsonResult().getJsonRecordFieldValue("Error", "Message");
+		return getJsonResult().getJsonRecordFieldValue("Error", "Message"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 }

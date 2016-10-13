@@ -44,7 +44,7 @@ import com.diversityarrays.dalclient.http.DalHeader;
 import com.diversityarrays.dalclient.http.DalHttpFactory;
 import com.diversityarrays.dalclient.http.DalRequest;
 import com.diversityarrays.dalclient.http.DalResponseHandler;
-import com.diversityarrays.util.Pair;
+import com.diversityarrays.dalclient.util.Pair;
 
 /**
  * <p>
@@ -62,22 +62,24 @@ import com.diversityarrays.util.Pair;
  */
 public class DefaultDALClient implements DALClient {
 	
-	private static final String MIME_TEXT_XML = "text/xml";
-	private static final String MIME_APPLICATION_XML = "application/xml";
+	private static final String MIME_TEXT_X_COMMA_SEPARATED_VALUES = "text/x-comma-separated-values"; //$NON-NLS-1$
+    private static final String MIME_APPLICATION_JSON = "application/json"; //$NON-NLS-1$
+    private static final String MIME_TEXT_XML = "text/xml"; //$NON-NLS-1$
+	private static final String MIME_APPLICATION_XML = "application/xml"; //$NON-NLS-1$
 	
 	static private boolean contentTypeIsXML(String contentType) {
 		return contentType.startsWith(MIME_TEXT_XML) || contentType.startsWith(MIME_APPLICATION_XML);
 	}
 	
-	private static final String LOGIN_PREFIX = "login/";
-	private static final String SWITCH_GROUP_PREFIX = "switch/group/";
+	private static final String LOGIN_PREFIX = "login/"; //$NON-NLS-1$
+	private static final String SWITCH_GROUP_PREFIX = "switch/group/"; //$NON-NLS-1$
 
-	private static final String OP2_LOGIN = LOGIN_PREFIX+"_username/_sessionFlag";
-	private static final String OP0_LOGOUT = "logout";
+	private static final String OP2_LOGIN = LOGIN_PREFIX+"_username/_sessionFlag"; //$NON-NLS-1$
+	private static final String OP0_LOGOUT = "logout"; //$NON-NLS-1$
 
-	private static final String OP0_LIST_GROUP = "list/group";
+	private static final String OP0_LIST_GROUP = "list/group"; //$NON-NLS-1$
 
-	static public boolean DEBUG = Boolean.getBoolean(DefaultDALClient.class.getName()+".DEBUG");
+	static public boolean DEBUG = Boolean.getBoolean(DefaultDALClient.class.getName()+".DEBUG"); //$NON-NLS-1$
 	
 	private Log log;
 
@@ -107,15 +109,15 @@ public class DefaultDALClient implements DALClient {
 
 	public DefaultDALClient(String baseUrl) {
 		String s = baseUrl;
-		if (! s.endsWith("/")) {
-			s = s + "/";
+		if (! s.endsWith("/")) { //$NON-NLS-1$
+			s = s + "/"; //$NON-NLS-1$
 		}
 		this.baseUrl = s;
 		
-		if (Boolean.getBoolean(DefaultDALClient.class.getName()+".WANT_LOGGING")) {
+		if (Boolean.getBoolean(DefaultDALClient.class.getName()+".WANT_LOGGING")) { //$NON-NLS-1$
 			try {
-				Class<?> logFactoryClass = Class.forName("org.apache.commons.logging.LogFactory");
-				Method getLogMethod = logFactoryClass.getDeclaredMethod("getLog", Class.class);
+				Class<?> logFactoryClass = Class.forName("org.apache.commons.logging.LogFactory"); //$NON-NLS-1$
+				Method getLogMethod = logFactoryClass.getDeclaredMethod("getLog", Class.class); //$NON-NLS-1$
 				log = (Log) getLogMethod.invoke(null, DALClient.class);
 				// log = LogFactory.getLog(DALClient.class);
 			} catch (ClassNotFoundException e) {
@@ -127,20 +129,22 @@ public class DefaultDALClient implements DALClient {
 			}
 		}
 		
-		String httpFactoryClassName = System.getProperty(this.getClass().getName()+".HTTP_FACTORY_CLASS_NAME");
+		String httpFactoryClassName = System.getProperty(this.getClass().getName()+".HTTP_FACTORY_CLASS_NAME"); //$NON-NLS-1$
 		if (httpFactoryClassName == null) {
-			if (System.getProperty("java.vm.name").equalsIgnoreCase("Dalvik")) {
-				httpFactoryClassName = "com.diversityarrays.dalclient.httpandroid.AndroidDalHttpFactory";
+			if (System.getProperty("java.vm.name").equalsIgnoreCase("Dalvik")) { //$NON-NLS-1$ //$NON-NLS-2$
+				httpFactoryClassName = "com.diversityarrays.dalclient.httpandroid.AndroidDalHttpFactory"; //$NON-NLS-1$
 			}
 			else {
-				httpFactoryClassName = "com.diversityarrays.dalclient.httpimpl.DalHttpFactoryImpl";
+				httpFactoryClassName = "com.diversityarrays.dalclient.httpimpl.DalHttpFactoryImpl"; //$NON-NLS-1$
 			}
 		}
 		
 		try {
 			Class<?> httpFactoryClass = Class.forName(httpFactoryClassName);
 			if (! DalHttpFactory.class.isAssignableFrom(httpFactoryClass)) {
-				throw new RuntimeException("className '"+httpFactoryClassName+"' does not implement "+DalHttpFactory.class.getName());
+				throw new RuntimeException("className '" //$NON-NLS-1$
+				        + httpFactoryClassName+"' does not implement " //$NON-NLS-1$
+				        + DalHttpFactory.class.getName());
 			}
 			dalHttpFactory = (DalHttpFactory) httpFactoryClass.newInstance();
 			
@@ -272,7 +276,7 @@ public class DefaultDALClient implements DALClient {
 				httpClient = null;
 			}
 			
-			logInfo("Logged out: "+baseUrl);
+			logInfo("Logged out: "+baseUrl); //$NON-NLS-1$
 		}
 	}
 	
@@ -310,8 +314,8 @@ public class DefaultDALClient implements DALClient {
 		String url = null;
 		try {
 			url = new CommandBuilder(OP2_LOGIN)
-				.setParameter("_username", username)
-				.setParameter("_sessionFlag", sessionExpiryOption.urlValue)
+				.setParameter("_username", username) //$NON-NLS-1$
+				.setParameter("_sessionFlag", sessionExpiryOption.urlValue) //$NON-NLS-1$
 				.setPrefix(baseUrl)
 				.build();
 		} catch (DalMissingParameterException e) {
@@ -325,9 +329,9 @@ public class DefaultDALClient implements DALClient {
 		
 		DalRequest request = new HttpPostBuilder(dalHttpFactory, url, log)
 			.setResponseType(responseType)
-			.addParameter("rand_num", rand)
-			.addParameter("url", url)
-			.addParameter("signature", signature)
+			.addParameter("rand_num", rand) //$NON-NLS-1$
+			.addParameter("url", url) //$NON-NLS-1$
+			.addParameter("signature", signature) //$NON-NLS-1$
 			.build();
 		
 		DalResponseHandler<HttpResponseInfo> handler = dalHttpFactory.createResponseHandler();
@@ -336,11 +340,11 @@ public class DefaultDALClient implements DALClient {
 		try {
 			tmpClient = dalHttpFactory.createCloseableHttpClient(DalUtil.createTrustingSSLContext());
 			
-			logInfo("performing login: "+url);
+			logInfo("performing login: "+url); //$NON-NLS-1$
 			Long[] elapsed = new Long[1];
 			HttpResponseInfo result = DalUtil.doHttp(tmpClient, request, handler, elapsed);
 			result.elapsedMillis = elapsed[0].longValue();
-			logDebug("Elapsed ms="+result.elapsedMillis+" for "+url);
+			logDebug("Elapsed ms="+result.elapsedMillis+" for "+url); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			DalResponse response = buildDalResponse(url, result);
 			if (DEBUG) {
@@ -356,27 +360,27 @@ public class DefaultDALClient implements DALClient {
 			this.userId = response.getRecordFieldValue(DALClient.TAG_USER, DALClient.ATTR_USER_ID);
 			this.writeToken = response.getRecordFieldValue(DALClient.TAG_WRITE_TOKEN, DALClient.ATTR_VALUE);
 			
-			logInfo("Logged in as id="+userId+"("+userName+") on "+baseUrl);
+			logInfo("Logged in as id="+userId+"("+userName+") on "+baseUrl); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			
 			// Ok - if we get here, we are logged in.
 			httpClient = tmpClient;
 			tmpClient = null;
 			
 			if (logIsDebugEnabled()) {
-				logDebug("  userId="+userId);
-				logDebug("  writeToken="+writeToken);
+				logDebug("  userId="+userId); //$NON-NLS-1$
+				logDebug("  writeToken="+writeToken); //$NON-NLS-1$
 			}
 			
 			if (autoSwitchGroupOnLogin) {
 				DalResponse listGroupResponse = performQuery(OP0_LIST_GROUP);
-				DalResponseRecord record = listGroupResponse.getFirstRecord("SystemGroup");
-				String groupId = record.rowdata.get("SystemGroupId");
+				DalResponseRecord record = listGroupResponse.getFirstRecord("SystemGroup"); //$NON-NLS-1$
+				String groupId = record.rowdata.get("SystemGroupId"); //$NON-NLS-1$
 				switchGroup(groupId);
 			}
 		}
 		finally {
 			if (! isLoggedIn()) {
-				logWarn("Login failed for '"+username+"' on "+baseUrl);
+				logWarn("Login failed for '"+username+"' on "+baseUrl); //$NON-NLS-1$ //$NON-NLS-2$
 				if (tmpClient!=null) {
 					try { tmpClient.close(); }
 					catch (IOException ignore) { }
@@ -397,21 +401,26 @@ public class DefaultDALClient implements DALClient {
 
 		// We don't want user's doing this directly.
 		if (command.startsWith(LOGIN_PREFIX)) {
-			logWarn("invalid attempt to perform '"+command+"'");
+			logWarn("invalid attempt to perform '"+command+"'"); //$NON-NLS-1$ //$NON-NLS-2$
 			throw new DalResponseException(command+" can't be performed (use client.login(un,pw))");
 		}
 		
 		// We don't want user's doing this directly.
 		if (command.startsWith(OP0_LOGOUT)) {
-			logWarn("invalid attempt to perform '"+command+"'");
+			logWarn("invalid attempt to perform '"+command+"'"); //$NON-NLS-1$ //$NON-NLS-2$
 			throw new DalResponseException(command+" can't be performed (use client.logout())");
 		}
 		
 		// We don't want user's doing this without going through switchGroup()
 		if (command.startsWith(SWITCH_GROUP_PREFIX)) {
-			logWarn("invalid attempt to perform '"+command+"'");
+			logWarn("invalid attempt to perform '"+command+"'"); //$NON-NLS-1$ //$NON-NLS-2$
 			throw new DalResponseException("Please use DALClient.switchGroup(groupId) instead of '"+command+"'");
 		}
+	}
+	
+	@Override
+	public PostBuilder preparePostQuery(String command) {
+		return new PostBuilderImpl(command);
 	}
 	
 	@Override
@@ -421,6 +430,11 @@ public class DefaultDALClient implements DALClient {
 
 	@Override
 	public QueryBuilder prepareQuery(String command) {
+		return prepareGetQuery(command);
+	}
+	
+	@Override
+	public QueryBuilder prepareGetQuery(String command) {
 		return new CommandBuilder(command, this);
 	}
 
@@ -428,7 +442,7 @@ public class DefaultDALClient implements DALClient {
 	throws IOException, DalResponseException {
 
 		String urls;
-		if (command.startsWith("http:")) {
+		if (command.startsWith("http:")) { //$NON-NLS-1$
 			// Hmmm. This is a hack to support the results of export commands et. al.
 			urls = command;
 		}
@@ -439,7 +453,7 @@ public class DefaultDALClient implements DALClient {
 				URL url = new URL(sb.toString());
 				// User may already have appended parameters
 				sb.append((url.getQuery()==null) ? '?' : '&')
-					.append("ctype=").append(responseType.postValue);
+					.append("ctype=").append(responseType.postValue); //$NON-NLS-1$
 			}
 			urls = sb.toString();
 		}
@@ -448,25 +462,25 @@ public class DefaultDALClient implements DALClient {
 			checkIfOkToPerform(urls.substring(baseUrl.length()));
 		}
 		
-		logInfo("performing query: "+urls);
+		logInfo("performing query: "+urls); //$NON-NLS-1$
 		
 		DalRequest request = dalHttpFactory.createHttpGet(urls);
 		Long[] elapsedMillis = new Long[1];
 		HttpResponseInfo result = DalUtil.doHttp(httpClient, request, dalHttpFactory.createResponseHandler(), elapsedMillis);
 		result.elapsedMillis = elapsedMillis[0].longValue();
-		logDebug("Elapsed ms="+result.elapsedMillis+" for "+urls);
+		logDebug("Elapsed ms="+result.elapsedMillis+" for "+urls); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return buildDalResponse(urls, result);
 	}
 
 	private DalResponse buildDalResponse(String url, HttpResponseInfo responseInfo) throws DalResponseException {
 		if (responseInfo.httpErrorReason!=null) {
-			StringBuilder sb = new StringBuilder("HTTP code ");
-			sb.append(responseInfo.httpStatusCode).append(": ").append(responseInfo.httpErrorReason);
+			StringBuilder sb = new StringBuilder("HTTP code "); //$NON-NLS-1$
+			sb.append(responseInfo.httpStatusCode).append(": ").append(responseInfo.httpErrorReason); //$NON-NLS-1$
 
 			String contentType = null;
 			for (DalHeader h : responseInfo.headers) {
-				if ("content-type".equalsIgnoreCase(h.getName())) {
+				if ("content-type".equalsIgnoreCase(h.getName())) { //$NON-NLS-1$
 					contentType = h.getValue();
 					break;
 				}
@@ -474,21 +488,25 @@ public class DefaultDALClient implements DALClient {
 
 			String dalErrorMessage = null;
 			
-			if ("text/plain".equals(contentType)) {
+			if ("text/plain".equals(contentType)) { //$NON-NLS-1$
 				dalErrorMessage = responseInfo.serverResponse;
 			}
 			else {
 				if (responseType.isXML()) {
 					if (contentType!=null && ! contentTypeIsXML(contentType)) {
 						// TODO check if httpErrorReason=="Internal Server Error" in which case we may want to transform to something else?
-						System.err.println("Warning: response content type is '"+contentType+"' for XML");
-						if (DalUtil.isHttpStatusCodeOk(responseInfo.httpStatusCode)) {
-							dalErrorMessage = "DAL response code="+responseInfo.httpStatusCode+" has unexpected Content-Type: '"+contentType+"'";
-						}
-						else {
-							// Just use the error code
-							dalErrorMessage = responseInfo.httpErrorReason+" (Content-Type="+contentType+")";
-						}
+							System.err.println("Warning: response content type is '"+contentType+"' for XML");
+							if (DalUtil.isHttpStatusCodeOk(responseInfo.httpStatusCode)) {
+								dalErrorMessage = "DAL response code=" + 
+								        responseInfo.httpStatusCode + 
+								        " has unexpected Content-Type: " 
+								        + "'" + contentType + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+							}
+							else {
+								// Just use the error code
+								dalErrorMessage = responseInfo.httpErrorReason
+								        + " (Content-Type=" + contentType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+							}
 					}
 					else {
 						Throwable error = null;
@@ -504,25 +522,31 @@ public class DefaultDALClient implements DALClient {
 						}
 
 						if  (error!=null) {
-							dalErrorMessage = "DAL XML response failed to parse: "+error.getMessage();
+							dalErrorMessage = "DAL XML response failed to parse: " + error.getMessage();
 						}
 					}
 				}
 				else {
 					// TODO handle Internal error first!
-					if (contentType!=null && ! (contentType.startsWith("application/json") /* || contentType.startsWith("text/json") */)) {
-						System.err.println("Warning: response content type is '"+contentType+"' for JSON");
+					if (contentType!=null && ! (contentType.startsWith(MIME_APPLICATION_JSON) /* || contentType.startsWith("text/json") */)) {
+						System.err.println("Warning: response content type is '" + contentType + "' for JSON");
 						if (DalUtil.isHttpStatusCodeOk(responseInfo.httpStatusCode)) {
-							dalErrorMessage = "DAL response code="+responseInfo.httpStatusCode+" has unexpected Content-Type: '"+contentType+"'";
+							dalErrorMessage = "DAL response code=" 
+							        + responseInfo.httpStatusCode
+							        + " has unexpected Content-Type: " 
+							        + "'" + contentType + "'"; //$NON-NLS-1$ //$NON-NLS-2$
 						}
 						else {
 							// Just use the error code
-							dalErrorMessage = responseInfo.httpErrorReason+" (Content-Type="+contentType+")";
+							dalErrorMessage = responseInfo.httpErrorReason
+							        + " (Content-Type=" + contentType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 						}
 					}
 					else {
 						JsonResult jsonResult = DalUtil.parseJson(url, responseInfo.serverResponse);
-						dalErrorMessage = jsonResult==null ? "?invalid JSON syntax in server response" : jsonResult.getJsonlDalErrorMessage();
+						dalErrorMessage = jsonResult==null 
+						        ? "?invalid JSON syntax in server response"  //$NON-NLS-1$
+						        : jsonResult.getJsonlDalErrorMessage();
 					}
 				}
 			}
@@ -532,13 +556,15 @@ public class DefaultDALClient implements DALClient {
 			}
 			String errorMessage = sb.toString();
 
-			logWarn("Error response for '"+url+"' is "+errorMessage);
+			logWarn("Error response for " 
+			        + "'" + url + "'" //$NON-NLS-1$ //$NON-NLS-2$
+			        + " is " + errorMessage);
 			throw new DalResponseHttpException(errorMessage, dalErrorMessage, url, responseInfo);
 		}
 		
 		String contentType = null;
 		for (DalHeader hdr : responseInfo.headers) {
-			if ("content-type".equalsIgnoreCase(hdr.getName())) {
+			if ("content-type".equalsIgnoreCase(hdr.getName())) { //$NON-NLS-1$
 				contentType = hdr.getValue();
 				break;
 			}
@@ -546,34 +572,38 @@ public class DefaultDALClient implements DALClient {
 		
 		DalResponse dalResponse = null;
 		if (contentType==null) {
-			DalResponseException dre = new DalResponseException("Unsupported response: no 'Content-Type' header");
-			logWarn("Error response for '"+url+"' is "+dre.getMessage());
+			DalResponseException dre = new DalResponseException(
+			        "Unsupported response: no 'Content-Type' header");
+			logWarn("Error response for '"+url+"' is "+dre.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
 			throw dre;
 		}
 		else if (contentTypeIsXML(contentType)) {
 			dalResponse = new XmlDalResponse(url, responseInfo);
 		}
-		else if (contentType.startsWith("application/json")) {
+		else if (contentType.startsWith(MIME_APPLICATION_JSON)) {
 			dalResponse = new JsonDalResponse(url, responseInfo);
 		}
-		else if ("text/x-comma-separated-values".equals(contentType)) {
+		else if (MIME_TEXT_X_COMMA_SEPARATED_VALUES.equals(contentType)) {
 			dalResponse = new CsvDalResponse(url, responseInfo);
 		}
 		else {
-			DalResponseException dre = new DalResponseException("Unsupported response: Content-Type='"+contentType+"'");
-			logWarn("Error response for '"+url+"' is "+dre.getMessage());
+			DalResponseException dre = new DalResponseException(
+			        "Unsupported response: Content-Type=" 
+			                + "'" + contentType + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+			logWarn("Error response for '"+url+"' is "+dre.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
 			throw dre;
 		}
 		
-		logInfo(dalResponse.getClass().getSimpleName()+" response rcvd for '"+url+"'");
+		logInfo(dalResponse.getClass().getSimpleName()+" response rcvd for '"+url+"'"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (dalResponse instanceof CsvDalResponse && (logIsDebugEnabled())) {
 			dalResponse.visitResults(new DalResponseRecordVisitor() {
 				@Override
 				public boolean visitResponseRecord(String resultTagName, DalResponseRecord record) {
 					StringBuilder sb = new StringBuilder(resultTagName);
-					sb.append(":");
+					sb.append(":"); //$NON-NLS-1$
 					for (String k : record.rowdata.keySet()) {
-						sb.append("\n  ").append(k).append('=').append(record.rowdata.get(k));
+						sb.append("\n  ").append(k) //$NON-NLS-1$
+						.append('=').append(record.rowdata.get(k));
 					}
 					logDebug(sb.toString());
 					return true;
@@ -597,39 +627,39 @@ public class DefaultDALClient implements DALClient {
 				this.groupId = groupId;
 				// Note: am assuming the DAL server did the right thing here!
 				this.groupName = record.rowdata.get(DALClient.ATTR_GROUP_NAME);
-				this.inAdminGroup = "TRUE".equalsIgnoreCase(record.rowdata.get(DALClient.ATTR_GADMIN));
+				this.inAdminGroup = "TRUE".equalsIgnoreCase(record.rowdata.get(DALClient.ATTR_GADMIN)); //$NON-NLS-1$
 			}
-			logInfo("switchGroup("+groupId+"): groupName="+groupName+" inAdminGroup="+inAdminGroup);
+			logInfo("switchGroup("+groupId+"): groupName="+groupName+" inAdminGroup="+inAdminGroup); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		else {
-			logWarn("switchGroup("+groupId+") error: "+err);
+			logWarn("switchGroup("+groupId+") error: "+err); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		return err;
 	}
 
-	private class UpdateBuilderImpl implements UpdateBuilder {
+	private class PostBuilderImpl implements UpdateBuilder {
 		
 		private final String command;
 		private final File upload;
 		
 		private final Factory<InputStream> uploadStream;
 		
-		UpdateBuilderImpl(String cmd) {
+		PostBuilderImpl(String cmd) {
 			this.command = cmd;
 			
 			this.upload = null;
 			this.uploadStream = null;
 		}
 		
-		UpdateBuilderImpl(String cmd, File file) {
+		PostBuilderImpl(String cmd, File file) {
 			this.command = cmd;
 			
 			this.upload = file;
 			this.uploadStream = null;
 		}
 		
-		UpdateBuilderImpl(String cmd, Factory<InputStream> streamFactory) {
+		PostBuilderImpl(String cmd, Factory<InputStream> streamFactory) {
 			this.command = cmd;
 			
 			this.upload = null;
@@ -639,7 +669,7 @@ public class DefaultDALClient implements DALClient {
 		private List<Pair<String,String>> postParameters = new ArrayList<Pair<String,String>>();
 		
 		@Override
-		public UpdateBuilder visitPostParameters(Closure<Pair<String,String>> visitor) {
+		public PostBuilder visitPostParameters(Closure<Pair<String,String>> visitor) {
 			for (Pair<String,String> nvp : postParameters) {
 				visitor.execute(nvp);
 			}
@@ -647,27 +677,64 @@ public class DefaultDALClient implements DALClient {
 		}
 		
 		@Override
-		public UpdateBuilderImpl addPostParameter(String name, String value) {
+		public PostBuilder addPostParameter(String name, String value) {
 			postParameters.add(new Pair<String,String>(name, value));
 			return this;
 		}
 		
 		@Override
-		public UpdateBuilder addPostParameter(String name, Number value) {
+		public PostBuilder addPostParameter(String name, Number value) {
 			return addPostParameter(name, value.toString());
 		}
 
 		@Override
-		public UpdateBuilder addPostParameters(Map<String, String> postParams) {
+		public PostBuilder addPostParameters(Map<String, String> postParams) {
 			for (String name : postParams.keySet()) {
 				postParameters.add(new Pair<String,String>(name, postParams.get(name)));
 			}
 			return this;
 		}
-
 		
 		@Override
+		public DalResponse executeQuery() throws IOException, DalResponseException {
+
+			checkIfOkToPerform(command);
+			
+			String url = baseUrl + command;
+			
+			HttpPostBuilder builder = new HttpPostBuilder(dalHttpFactory, url, log)
+				.setResponseType(responseType)
+				.addParameters(postParameters);
+			
+			DalRequest request = builder.build();
+			
+			if (postParameters == null || postParameters.isEmpty()) {
+				logInfo("PostBuilderImpl.execute: NO parameters : "+url); //$NON-NLS-1$
+			}
+			else {
+				logInfo("PostBuilderImpl.execute: " + postParameters.size() + " parameters : "+url); //$NON-NLS-1$ //$NON-NLS-2$
+				if (logIsDebugEnabled()) {
+					for (Iterator<Pair<String,String>> iterator = postParameters.iterator(); iterator.hasNext(); ) {
+						Pair<String,String> nvp = iterator.next();
+						logDebug("  "+nvp.a+"="+nvp.b); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+			}
+			Long[] elapsed = new Long[1];
+			HttpResponseInfo result = DalUtil.doHttp(httpClient, request, dalHttpFactory.createResponseHandler(), elapsed);
+			result.elapsedMillis = elapsed[0].longValue();
+			logDebug("Elapsed ms="+result.elapsedMillis+" for "+url); //$NON-NLS-1$ //$NON-NLS-2$
+			
+			return buildDalResponse(url, result);
+		}
+
+		@Override
 		public DalResponse execute() throws IOException, DalResponseException {
+			return executeUpdate();
+		}
+
+		@Override
+		public DalResponse executeUpdate() throws IOException, DalResponseException {
 			
 			checkIfOkToPerform(command);
 			
@@ -690,31 +757,33 @@ public class DefaultDALClient implements DALClient {
 			}
 			
 			if (postParameters == null || postParameters.isEmpty()) {
-				logInfo("UpdateBuilder.execute: NO parameters : "+url);
+				logInfo("PostBuilderImpl.execute: NO parameters : "+url); //$NON-NLS-1$
 			}
 			else {
-				logInfo("UpdateBuilder.execute: " + postParameters.size() + " parameters : "+url);
+				logInfo("PostBuilderImpl.execute: " + postParameters.size()  //$NON-NLS-1$
+				    + " parameters : "+url); //$NON-NLS-1$
 				if (logIsDebugEnabled()) {
 					for (Iterator<Pair<String,String>> iterator = postParameters.iterator(); iterator.hasNext(); ) {
 						Pair<String,String> nvp = iterator.next();
-						logDebug("  "+nvp.a+"="+nvp.b);
+						logDebug("  "+nvp.a+"="+nvp.b); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 			}
 			Long[] elapsed = new Long[1];
 			HttpResponseInfo result = DalUtil.doHttp(httpClient, request, dalHttpFactory.createResponseHandler(), elapsed);
 			result.elapsedMillis = elapsed[0].longValue();
-			logDebug("Elapsed ms="+result.elapsedMillis+" for "+url);
+			logDebug("Elapsed ms="+result.elapsedMillis+" for "+url); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			return buildDalResponse(url, result);
 		}
 		
 		@Override
-		public UpdateBuilder printOn(PrintStream ps) {
-			ps.println("Command: "+command);
-			ps.println("Upload File: "+(upload==null?"null":upload.getPath()));
+		public PostBuilder printOn(PrintStream ps) {
+			ps.println("Command: "+command); //$NON-NLS-1$
+			ps.println("Upload File: " //$NON-NLS-1$
+			        +(upload==null ? "null" : upload.getPath())); //$NON-NLS-1$
 			int nParameters = postParameters.size();
-			ps.println("Parameters: "+nParameters);
+			ps.println("Parameters: "+nParameters); //$NON-NLS-1$
 			
 			String dalCommandUrl = baseUrl + command;
 			
@@ -722,15 +791,17 @@ public class DefaultDALClient implements DALClient {
 				.setResponseType(responseType)
 				.addParameters(postParameters);
 			
-			StringBuilder dataForSignature = new StringBuilder("Data for Signature:\n");
+			StringBuilder dataForSignature = new StringBuilder("Data for Signature:\n"); //$NON-NLS-1$
 			List<Pair<String,String>> pairs = builder.collectPairsForUpdate(writeToken, dataForSignature);
 			
-			ps.println("Pairs for Update: "+pairs.size());
+			ps.println("Pairs for Update: "+pairs.size()); //$NON-NLS-1$
 			int count = 0;
 			for (Pair<String,String> pair : pairs) {
-				ps.println("  "+(++count)+": "+pair.a+"="+pair.b);
+				ps.println("  " + (++count) //$NON-NLS-1$
+				        + ": " +pair.a  //$NON-NLS-1$
+				        + "=" + pair.b); //$NON-NLS-1$
 				if (count==nParameters) {
-					ps.println("---- computed ------");
+					ps.println("---- computed ------"); //$NON-NLS-1$
 				}
 			}
 			
@@ -756,8 +827,8 @@ public class DefaultDALClient implements DALClient {
 	 * @return an UpdateBuilder instance
 	 */
 	@Override
-	public UpdateBuilder prepareExport(String command) {
-		return new UpdateBuilderImpl(command);
+	public PostBuilder prepareExport(String command) {
+		return new PostBuilderImpl(command);
 	}
 
 	/**
@@ -801,7 +872,7 @@ public class DefaultDALClient implements DALClient {
 	 */
 	@Override
 	public UpdateBuilder prepareUpdate(String command) {
-		return new UpdateBuilderImpl(command);
+		return new PostBuilderImpl(command);
 	}
 
 	/**
@@ -838,10 +909,10 @@ public class DefaultDALClient implements DALClient {
 		DalRequest request = postBuilder.buildForUpdate(writeToken);
 
 		Long[] elapsed = new Long[1];
-		logInfo("performUpdate: "+url);
+		logInfo("performUpdate: "+url); //$NON-NLS-1$
 		HttpResponseInfo result = DalUtil.doHttp(httpClient, request, dalHttpFactory.createResponseHandler(), elapsed);
 		result.elapsedMillis = elapsed[0].longValue();
-		logDebug("Elapsed ms="+result.elapsedMillis+" for "+url);
+		logDebug("Elapsed ms=" + result.elapsedMillis + " for " + url); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return buildDalResponse(url, result);
 		//   returns "ReturnId/@Value
@@ -864,7 +935,7 @@ public class DefaultDALClient implements DALClient {
 	 */
 	@Override
 	public UpdateBuilder prepareUpload(String command, File upload) {
-		return new UpdateBuilderImpl(command, upload);
+		return new PostBuilderImpl(command, upload);
 	}
 
 	/**
@@ -875,7 +946,7 @@ public class DefaultDALClient implements DALClient {
 	 */
 	@Override
 	public UpdateBuilder prepareUpload(String command, Factory<InputStream> stream) {
-		return new UpdateBuilderImpl(command, stream);
+		return new PostBuilderImpl(command, stream);
 	}
 	
 	/**
@@ -912,11 +983,11 @@ public class DefaultDALClient implements DALClient {
 		
 		DalRequest request = postBuilder.buildForUpload(writeToken, upload);
 		
-		logInfo("performUpload: "+url);
+		logInfo("performUpload: "+url); //$NON-NLS-1$
 		Long[] elapsed = new Long[1];
 		HttpResponseInfo result = DalUtil.doHttp(httpClient, request, dalHttpFactory.createResponseHandler(), elapsed);
 		result.elapsedMillis = elapsed[0].longValue();
-		logDebug("Elapsed ms="+result.elapsedMillis+" for "+url);
+		logDebug("Elapsed ms="+result.elapsedMillis+" for "+url); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return buildDalResponse(url, result);
 		// returns "ReturnIdFile/@xml"
@@ -959,11 +1030,11 @@ public class DefaultDALClient implements DALClient {
 		
 		DalRequest request = postBuilder.buildForUpload(writeToken, streamFactory);
 		
-		logInfo("performUpload: "+url);
+		logInfo("performUpload: "+url); //$NON-NLS-1$
 		Long[] elapsed = new Long[1];
 		HttpResponseInfo result = DalUtil.doHttp(httpClient, request, dalHttpFactory.createResponseHandler(), elapsed);
 		result.elapsedMillis = elapsed[0].longValue();
-		logDebug("Elapsed ms="+result.elapsedMillis+" for "+url);
+		logDebug("Elapsed ms="+result.elapsedMillis+" for "+url); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return buildDalResponse(url, result);
 	}
