@@ -1,26 +1,28 @@
 /*
  * dalclient library - provides utilities to assist in using KDDart-DAL servers
- * Copyright (C) 2015  Diversity Arrays Technology
- *
+ * Copyright (C) 2015,2016,2017 Diversity Arrays Technology
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package com.diversityarrays.dalclient;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpCookie;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections15.Factory;
@@ -231,7 +233,7 @@ public interface DALClient {
 
 	/**
 	 * Return the base URL for the DAL server.
-	 * 
+	 *
 	 * @return the DAL server URL
 	 */
 	String getBaseUrl();
@@ -239,7 +241,7 @@ public interface DALClient {
 	/**
 	 * Set the type (XML or JSON) to use for responses from server. The default
 	 * value is XML.
-	 * 
+	 *
 	 * @param responseType
 	 * @return this DALClient
 	 */
@@ -250,7 +252,7 @@ public interface DALClient {
 	/**
 	 * If switchGroupOnLogin is true then the client will automatically switch
 	 * to the first listed group for the user (if the login is successful).
-	 * 
+	 *
 	 * @param switchGroup
 	 *            true/false
 	 * @return this DALClient to support fluent coding style
@@ -261,7 +263,7 @@ public interface DALClient {
 
 	/**
 	 * Set whether sessions need to be explicitly logged out or not.
-	 * 
+	 *
 	 * @param sessionExpiryOption
 	 */
 	void setSessionExpiryOption(SessionExpiryOption sessionExpiryOption);
@@ -270,14 +272,14 @@ public interface DALClient {
 
 	/**
 	 * Return whether the client is logged-in or not.
-	 * 
+	 *
 	 * @return true/false
 	 */
 	boolean isLoggedIn();
 
 	/**
 	 * Attempt to login using the given credentials.
-	 * 
+	 *
 	 * @param username
 	 * @param password
 	 * @throws IOException
@@ -296,7 +298,7 @@ public interface DALClient {
 	 * Return non-null error message if not successful. When successful, use the
 	 * accessor methods of the client to retrieve the groupName and whether the
 	 * group has administrator privileges.
-	 * 
+	 *
 	 * @param groupId
 	 * @return error message as a String
 	 * @throws IOException
@@ -306,49 +308,49 @@ public interface DALClient {
 
 	/**
 	 * Return the String representation of the current user id (Integer).
-	 * 
+	 *
 	 * @return a String
 	 */
 	String getUserId();
 
 	/**
 	 * Return the current user name.
-	 * 
+	 *
 	 * @return a String
 	 */
 	String getUserName();
 
 	/**
 	 * Return the write token provided by DAL on a successful login.
-	 * 
+	 *
 	 * @return a String
 	 */
 	String getWriteToken();
 
 	/**
 	 * Return whether the current group has administrator privileges.
-	 * 
+	 *
 	 * @return true/false
 	 */
 	boolean isInAdminGroup();
 
 	/**
 	 * Return the current group name.
-	 * 
+	 *
 	 * @return a String
 	 */
 	String getGroupName();
 
 	/**
 	 * Return the String representation of the current group id (Integer).
-	 * 
+	 *
 	 * @return a String
 	 */
 	String getGroupId();
 
 	/**
 	 * Perform a simple query command.
-	 * 
+	 *
 	 * @param command
 	 * @return the DalResponse for this query
 	 * @throws IOException
@@ -360,12 +362,12 @@ public interface DALClient {
 	/**
 	 * Prepare to perform a query command using the Fluent programming style.
 	 * For example:
-	 * 
+	 *
 	 * <pre>
 	 * DalResponse response = client.prepareQuery(&quot;list/genotype/_nperpage/page/_num&quot;)
 	 * 		.setParameter(&quot;_nperpage&quot;, 200).setParameter(&quot;_num&quot;, 1).execute();
 	 * </pre>
-	 * 
+	 *
 	 * @param command
 	 * @return QueryBuilder
 	 */
@@ -381,30 +383,30 @@ public interface DALClient {
 	/**
 	 * Prepare to perform a query command using the Fluent programming style.
 	 * For example:
-	 * 
+	 *
 	 * <pre>
 	 * DalResponse response = client.preparePostQuery(&quot;list/genotype/_nperpage/page/_num&quot;)
 	 * 		.setParameter(&quot;_nperpage&quot;, 200).setParameter(&quot;_num&quot;, 1)
 	 *      .execute();
 	 * </pre>
-	 * 
+	 *
 	 * @param command
 	 * @return PostBuilder
 	 */
 	PostBuilder preparePostQuery(String command);
-	
+
 	// - - - - - - - - - - - - - - - - - - - -
 
 	/**
 	 * Perform an UPDATE command with the provided parameters. For example:
-	 * 
+	 *
 	 * <pre>
 	 * Map&lt;String, String&gt; params = new LinkedHashMap&lt;String, String&gt;();
 	 * params.put(&quot;name1&quot;, &quot;value1&quot;);
 	 * params.put(&quot;name2&quot;, &quot;value2&quot;);
 	 * DalResponse response = client.performUpdate(&quot;update-command&quot;, params);
 	 * </pre>
-	 * 
+	 *
 	 * @param command
 	 * @param postParameters
 	 * @return a DalResponse instance
@@ -417,7 +419,7 @@ public interface DALClient {
 	/**
 	 * Perform an UPDATE command using the Fluent programming style. For
 	 * example:
-	 * 
+	 *
 	 * <pre>
 	 * DalResponse response = client.prepareUpdate("update-command")
 	 *    .addPostParameter(name1, value1)
@@ -425,7 +427,7 @@ public interface DALClient {
 	 *     :
 	 *    .execute();
 	 * </pre>
-	 * 
+	 *
 	 * @param command
 	 * @return an UpdateBuilder instance
 	 */
@@ -435,7 +437,7 @@ public interface DALClient {
 
 	/**
 	 * Perform a file upload command with the provided parameters. For example:
-	 * 
+	 *
 	 * <pre>
 	 * Map&lt;String, String&gt; params = new LinkedHashMap&lt;String, String&gt;();
 	 * params.put(&quot;name1&quot;, &quot;value1&quot;);
@@ -443,7 +445,7 @@ public interface DALClient {
 	 * DalResponse response = client.performUpload(&quot;update-command&quot;, params,
 	 * 		fileToUpload);
 	 * </pre>
-	 * 
+	 *
 	 * @param command
 	 * @param postParameters
 	 * @param upload
@@ -464,7 +466,7 @@ public interface DALClient {
 	 * and once to compute the checksum on the data.
 	 * <p>
 	 * For example:
-	 * 
+	 *
 	 * <pre>
 	 * String content = &quot;&lt;DATA&gt;&lt;/DATA&gt;&quot;;
 	 * Factory&lt;InputStream&gt; factory = new Factory&lt;InputStream&gt;() {
@@ -477,7 +479,7 @@ public interface DALClient {
 	 * params.put(&quot;name2&quot;, &quot;value2&quot;);
 	 * DalResponse response = client.performUpload(&quot;update-command&quot;, params, factory);
 	 * </pre>
-	 * 
+	 *
 	 * @param command
 	 * @param postParameters
 	 * @param streamFactory
@@ -493,7 +495,7 @@ public interface DALClient {
 	/**
 	 * Perform a file upload command using the fluent programming style. For
 	 * example:
-	 * 
+	 *
 	 * <pre>
 	 * DalResponse response = client.prepareUpload("update-command", fileToUpload)
 	 *    .addPostParameter(name1, value1)
@@ -501,7 +503,7 @@ public interface DALClient {
 	 *     :
 	 *    .execute();
 	 * </pre>
-	 * 
+	 *
 	 * @param command the DAL upload command
 	 * @param upload the File to upload
 	 * @return a UpdateBuilder instance
@@ -511,7 +513,7 @@ public interface DALClient {
 	/**
 	 * Perform a file upload command using the fluent programming style. For
 	 * example:
-	 * 
+	 *
 	 * <pre>
 	 * DalResponse response = client.prepareUpload("update-command", streamFactory)
 	 *    .addPostParameter(name1, value1)
@@ -519,7 +521,7 @@ public interface DALClient {
 	 *     :
 	 *    .execute();
 	 * </pre>
-	 * 
+	 *
 	 * @param command
 	 * @param streamFactory
 	 * @return a UpdateBuilder instance
@@ -533,7 +535,7 @@ public interface DALClient {
 	 * EXPORT commands start with "export/"
 	 * <P>
 	 * Usage:
-	 * 
+	 *
 	 * <pre>
 	 * DalResponse response = client.prepareExport(<i>export-command</i>)
 	 *    .addPostParameter(name1, value1)
@@ -541,7 +543,7 @@ public interface DALClient {
 	 *     :
 	 *    .execute();
 	 * </pre>
-	 * 
+	 *
 	 * @param command
 	 * @return an UpdateBuilder instance
 	 */
@@ -560,7 +562,7 @@ public interface DALClient {
 	 * params.put(&quot;name2&quot;, &quot;value2&quot;);
 	 * DalResponse response = client.performExport(&quot;export/genotype&quot;, params);
 	 * </pre>
-	 * 
+	 *
 	 * @param command
 	 * @param postParameters
 	 * @return a DalResponse instance
@@ -572,9 +574,15 @@ public interface DALClient {
 
 	/**
 	 * Establish a log for the client.
-	 * 
+	 *
 	 * @param log
 	 */
 	void setLog(Log log);
 
+    /**
+     * Retrieve the HttpCookies from the last request.
+     * @return a List of HttpCookie
+     * @throws IllegalStateException if not logged in
+     */
+    List<HttpCookie> getHttpCookies() throws IllegalStateException;
 }

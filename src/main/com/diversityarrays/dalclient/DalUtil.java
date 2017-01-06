@@ -1,20 +1,20 @@
 /*
  * dalclient library - provides utilities to assist in using KDDart-DAL servers
- * Copyright (C) 2015  Diversity Arrays Technology
- *
+ * Copyright (C) 2015,2016,2017 Diversity Arrays Technology
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package com.diversityarrays.dalclient;
 
 import java.io.IOException;
@@ -37,13 +37,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Formatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,9 +64,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import net.pearcan.json.JsonMap;
-import net.pearcan.json.JsonParser;
-
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections15.Predicate;
 import org.w3c.dom.Document;
@@ -81,12 +78,19 @@ import com.diversityarrays.dalclient.http.DalCloseableHttpResponse;
 import com.diversityarrays.dalclient.http.DalHeader;
 import com.diversityarrays.dalclient.http.DalRequest;
 import com.diversityarrays.dalclient.http.DalResponseHandler;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * Utility routines for use across the rest of the DAL packages.
  * @author brian
  *
  */
+@SuppressWarnings("nls")
 public class DalUtil {
 
 	private static final String DIGEST_MD5 = "MD5"; //$NON-NLS-1$
@@ -103,14 +107,14 @@ public class DalUtil {
 	static public String getDalClientLibraryVersion() {
 		return Main.VERSION;
 	}
-	
+
 	static public boolean DEBUG = Boolean.getBoolean(DalUtil.class.getName()+".DEBUG"); //$NON-NLS-1$
-	
+
 	/**
 	 * Use this with SimpleDateFormat for date/time values sent to DAL.
 	 */
 	static public final String DATE_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss"; //$NON-NLS-1$
-	
+
 
 	/**
 	 * This is the beginning of the standard DAL "permission denied" error.
@@ -122,10 +126,10 @@ public class DalUtil {
 	 * This is the Charset name used for crypto.
 	 */
 	static public String cryptCharsetName = ENCODING_UTF_8;
-	
+
 	/**
 	 * Compare two version number strings and return
-	 * -1, 0, 1 if <code>a</code> is respectively less-than, equal to 
+	 * -1, 0, 1 if <code>a</code> is respectively less-than, equal to
 	 * or greater-than <code>b</code>.
 	 * @param a
 	 * @param b
@@ -166,7 +170,7 @@ public class DalUtil {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Create an SSLContext which will trust all certificates (i.e. it does not validate
 	 * any certificate chains).
@@ -200,7 +204,7 @@ public class DalUtil {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Convenience interface to URLEncoder.encode(input, "UTF-8").
 	 * @param input
@@ -208,7 +212,7 @@ public class DalUtil {
 	 */
 	static public String urlEncodeUTF8(String input) {
 		String result = input;
-		
+
 		try {
 			result = URLEncoder.encode(input, ENCODING_UTF_8);
 		} catch (UnsupportedEncodingException e) {
@@ -216,7 +220,7 @@ public class DalUtil {
 
 		return result;
 	}
-	
+
 	/**
 	 * Convenience interface to URLDecoder.decode(input, "UTF-8").
 	 * @param input
@@ -230,17 +234,17 @@ public class DalUtil {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Replace all of the parameters in the provided commandTemplate with
-	 * the values of the parameters. The commandPattern portions are "/" delimited and 
+	 * the values of the parameters. The commandPattern portions are "/" delimited and
 	 * parameters names are those segments which begin with the letter "_".
 	 * <p>
 	 * An alternative is to use the CommandBuilder class.
 	 * @param prefix prepended to the URL constructed, may be null
 	 * @param commandTemplate
 	 * @param parameters
-	 * @return the URL 
+	 * @return the URL
 	 * @throws DalMissingParameterException
 	 */
 	static public String buildCommand(String prefix, String commandTemplate, Map<String,String> parameters)
@@ -263,10 +267,10 @@ public class DalUtil {
 				sb.append(p);
 			}
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	/**
 	 * <p>
 	 * Execute the provided request using the client and allow the handler to process the response.
@@ -284,12 +288,12 @@ public class DalUtil {
 	{
 		return doHttp(client, request, handler, null);
 	}
-			
-	
+
+
 	/**
 	 * Execute the provided request using the client and allow the handler to process the response.
 	 * Before returning the result from the handler, ensure that the response has been closed.
-	 * If the <code>elapsedTime</code> parameter is supplied then return the number of milliseconds 
+	 * If the <code>elapsedTime</code> parameter is supplied then return the number of milliseconds
 	 * spent in the <code>client.execute()</code> method call.
 	 * @param client
 	 * @param request
@@ -325,19 +329,19 @@ public class DalUtil {
 				try { response.close(); } catch (IOException ignore) { }
 			}
 		}
-		
+
 		return result;
 	}
 
 	/**
 	 * Calculate an RFC 2104 compliant HMAC signature.
 	 * @param key is the signing key
-	 * @param data is the data to be signed 
+	 * @param data is the data to be signed
 	 * @return the base64-encoded signature as a String
 	 */
 	public static String computeHmacSHA1(String key, String data) {
 		try {
-			byte[] keyBytes = key.getBytes(cryptCharsetName);           
+			byte[] keyBytes = key.getBytes(cryptCharsetName);
 			SecretKeySpec signingKey = new SecretKeySpec(keyBytes, ALGORITHM_HMAC_SHA1);
 
 			Mac mac = Mac.getInstance(ALGORITHM_HMAC_SHA1);
@@ -369,11 +373,11 @@ public class DalUtil {
 		random.nextBytes(sixtyFourBits);
 		// Let's be positive about this :-)
 		sixtyFourBits[0] = (byte) (0x7f & sixtyFourBits[0]);
-		
+
 		BigInteger bigint = new BigInteger(sixtyFourBits);
 		return bigint.toString();
 	}
-	
+
 	/**
 	 * Computes the MD5 checksum of the bytes in the InputStream.
 	 * The input is close()d on exit.
@@ -388,7 +392,7 @@ public class DalUtil {
 			dis = new DigestInputStream(input, md);
 			while (-1 != dis.read())
 				;
-			
+
 			byte[] digest = md.digest();
 			formatter = new Formatter();
 			for (byte b : digest) {
@@ -412,9 +416,9 @@ public class DalUtil {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// JSON tools
-	
-	
-	
+
+
+
 	/**
 	 * <p>
 	 * This interface is used to allow substitution of a different json parser as/if required.
@@ -447,15 +451,17 @@ public class DalUtil {
 		 * @return the error message or null
 		 */
 		String getJsonlDalErrorMessage();
-		
+
 		/**
 		 * Retrieve the value of the key 'fieldName' from the first
 		 * array element of the key 'recordName' in this JsonResult.
 		 * @param recordName
 		 * @param fieldName
 		 * @return a String or null
+		 * @throws DalResponseFormatException
 		 */
-		String getJsonRecordFieldValue(String recordName, String fieldName);
+		String getJsonRecordFieldValue(String recordName, String fieldName)
+		        throws DalResponseFormatException;
 
 		/**
 		 * Return the first JSON array element from the value of the supplied key.
@@ -468,7 +474,7 @@ public class DalUtil {
         /**
          * Invoke the <code>visitor.visitResponseRow()</code> method for each result in the response.
          * @param visitor
-         * @param wantedTagNames 
+         * @param wantedTagNames
          * @return true if all records were visited
          * @throws DalResponseException
          */
@@ -477,266 +483,282 @@ public class DalUtil {
         /**
          * Invoke the <code>visitor.visitResponseRow()</code> method for each result in the response.
          * @param visitor
-         * @param wantedTagNames 
+         * @param wantedTagNames
          * @param wantEmptyRecords
          * @return true if all records were visited
          * @throws DalResponseException
          */
         boolean visitResults(DalResponseRecordVisitor visitor, List<String> wantedTagNames, boolean wantEmptyRecords) throws DalResponseException;
 	}
-	
-	/**
-	 * This implementation of JsonResult uses my quick json parser hack.
-	 */
-	static public class JsonMap_JsonResult implements JsonResult {
-		
-		private final String requestUrl;
-		private final JsonMap jsonMap;
 
-		public JsonMap_JsonResult(String requestUrl, JsonMap jsonMap) {
-			this.requestUrl = requestUrl;
-			this.jsonMap = jsonMap;
-		}
+	static public class JsonResultImpl implements JsonResult {
+      private final String requestUrl;
+      private final JsonObject jsonObject;
 
-		@Override
-		public List<?> getListAt(String recordName) {
-			List<?> result = null;
-			Object object = jsonMap.get(recordName);
-			
-			if (object instanceof List) {
-				result = (List<?>) object;
-			}
-			return result;
-		}
-		
-		@Override
-		public String getJsonRecordFieldValue(String recordName, String fieldName) {
-			String result = null;
+        public JsonResultImpl(String requestUrl, JsonObject jsonObject) {
+          this.requestUrl = requestUrl;
+          this.jsonObject = jsonObject;
+        }
 
-			List<?> list = getListAt(recordName);
-			// we expect a particular structure in a DAL response
-			if (list != null) {
-				if (! list.isEmpty()) {
-					Object resultObj = null;
-					Object info = list.get(0);
-					if (info instanceof JsonMap) {
-						JsonMap jsonMap = (JsonMap) info;
-						resultObj = jsonMap.get(fieldName);
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        @Override
+        public List<?> getListAt(String recordName) {
+          List result = null;
 
-					}
+          JsonElement elt = jsonObject.get(recordName);
+          if (elt != null && elt.isJsonArray()) {
+              JsonArray array = (JsonArray) elt;
+              result = new ArrayList<>(array.size());
+              for (JsonElement arrayElt : array) {
+                  result.add(arrayElt);
+              }
+          }
+            return result;
+        }
 
-					if (resultObj!=null) {
-						result = resultObj.toString();
-					}
-				}
-			}
+        @Override
+        public String getJsonlDalErrorMessage() {
+            String result = null;
+            List<?> list = getListAt(DALClient.TAG_ERROR);
+            if (list!=null) {
+                if (list.isEmpty()) {
+                    result = "Unknown error: missing element"; //$NON-NLS-1$
+                }
+                else {
+                    Object item = list.get(0);
+                    if (item==null) {
+                        result = "Unknown error: 'null'"; //$NON-NLS-1$
+                    }
+                    else if (item instanceof JsonObject) {
+                        JsonObject errors = (JsonObject) item;
+                        StringBuilder sb = new StringBuilder();
+                        String sep = ""; //$NON-NLS-1$
+                        for (Map.Entry<String, JsonElement> entry : errors.entrySet()) {
+                            JsonElement value = entry.getValue();
+                            sb.append(sep).append(entry.getKey()).append('=').append(value.getAsString());
+                        }
+                        result = sb.toString();
+                    }
+                    else {
+                        result = "Unknown error: 'Error' item is "+item.getClass().getName(); //$NON-NLS-1$
+                    }
+                }
+            }
+            return result;
+        }
 
-			return result;
-		}
-		
-		@Override
-		public String getJsonlDalErrorMessage() {
-			String result = null;
-			List<?> list = getListAt(DALClient.TAG_ERROR);
-			if (list!=null) {
-				if (list.isEmpty()) {
-					result = "Unknown error: missing element"; //$NON-NLS-1$
-				}
-				else {
-					Object item = list.get(0);
-					if (item==null) {
-						result = "Unknown error: 'null'"; //$NON-NLS-1$
-					}
-					else if (item instanceof JsonMap) {
-						JsonMap errors = (JsonMap) item;
-						StringBuilder sb = new StringBuilder();
-						String sep = ""; //$NON-NLS-1$
-						for (String key : errors.getKeysInOrder()) {
-							sb.append(sep).append(key).append('=').append(errors.get(key));
-						}
-						result = sb.toString();
-					}
-					else {
-						result = "Unknown error: 'Error' item is "+item.getClass().getName(); //$NON-NLS-1$
-					}
-				}
-			}
+        @Override
+        public String getJsonRecordFieldValue(String recordName, String fieldName) throws DalResponseFormatException {
+          String result = null;
 
-			return result;
-		}
+          List<?> list = getListAt(recordName);
+          // we expect a particular structure in a DAL response
+          if (list != null) {
+              if (! list.isEmpty()) {
+                  Object info = list.get(0);
+                  if (info instanceof JsonObject) {
+                      JsonObject jsonObject = (JsonObject) info;
+                      JsonElement value = jsonObject.get(fieldName);
 
-		@Override
-		public DalResponseRecord getFirstRecord(String key) throws DalResponseFormatException {
-			DalResponseRecord result = null;
-			List<?> list = getListAt(key);
-			if (list!=null && ! list.isEmpty()) {
-				Object item = list.get(0);
-				if (item instanceof JsonMap) {
-					result = createFrom(requestUrl, key, (JsonMap) item);
-				}
-				else {
-					throw new DalResponseFormatException(
-					        String.format("unexpected type for '%s'[0] : %s", key, item.getClass().getName())); //$NON-NLS-1$
-				}
-			}
-			
-			return result == null ? new DalResponseRecord(requestUrl, key) : result;
-		}
+                      result = value.getAsString();
+                  }
+                  else {
+                      throw new DalResponseFormatException(
+                              String.format("Expected JsonObject but got %s",
+                                      info.getClass().getName()));
+                  }
+              }
+          }
+          return result;
+        }
 
-	    @Override
-	    public boolean visitResults(DalResponseRecordVisitor visitor, List<String> wantedTagNames) throws DalResponseException {
-	        return visitResults(visitor, wantedTagNames, false);
-	    }
+        @Override
+        public DalResponseRecord getFirstRecord(String key) throws DalResponseFormatException {
+            DalResponseRecord result = null;
+            List<?> list = getListAt(key);
+            if (list!=null && ! list.isEmpty()) {
+                Object item = list.get(0);
+                if (item instanceof JsonObject) {
+                  result = createFrom(requestUrl, key, (JsonObject) item);
+              }
+              else {
+                  throw new DalResponseFormatException(
+                          String.format("unexpected type for '%s'[0] : %s", key, item.getClass().getName())); //$NON-NLS-1$
+              }
+          }
 
-		@Override
-		public boolean visitResults(DalResponseRecordVisitor visitor, List<String> wantedTagNames, boolean wantEmptyRecords)
-		throws DalResponseException 
-		{
-			boolean result = true;
-			
-			List<?> rmetaList = getListAt(DALClient.TAG_RECORD_META);
-			if (rmetaList==null || rmetaList.isEmpty()) {
-				throw new DalResponseException("missing RecordMeta in DAL response"); //$NON-NLS-1$
-			}
-			
-			for (Object rmeta : rmetaList) {
-				if (! (rmeta instanceof JsonMap)) {
-					throw new DalResponseException("Invalid JSON structure in "+DALClient.TAG_RECORD_META); //$NON-NLS-1$
-				}
-				JsonMap rmetaMap = (JsonMap) rmeta;
-				Object tagnameObj = rmetaMap.get(DALClient.ATTR_TAG_NAME);
-				if (tagnameObj==null) {
-					throw new DalResponseException("missing RecordMeta/TagName in DAL response"); //$NON-NLS-1$
-				}
-				
-				String tagName = tagnameObj.toString();
-				List<?> list = getListAt(tagName);
-				if (list==null) {
-					throw new DalResponseException(String.format("missing entry for '%s' in DAL response", tagName)); //$NON-NLS-1$
-				}
-				
-				int count = 0;
-				for (Object item : list) {
-					if (item instanceof JsonMap) {
-						JsonMap jsonMap = (JsonMap) item;
-						DalResponseRecord record = createFrom(requestUrl, tagName, jsonMap);
-						if (wantEmptyRecords || ! record.isEmpty()) {
-	                        if (! visitor.visitResponseRecord(tagName, record)) {
-	                            result = false;
-	                            break;
-	                        }
-						}
-					}
-					else {
-						throw new DalResponseFormatException(
-						        String.format("unexpected type for '%s'[%d] :%s", //$NON-NLS-1$
-						                tagName, count, item.getClass().getName()));
-					}
-					++count;
-				}
-				
-				if (! result) {
-					break;
-				}
-			}
-			return result;
-		}
+          return result == null ? new DalResponseRecord(requestUrl, key) : result;
+        }
+
+        @Override
+        public boolean visitResults(DalResponseRecordVisitor visitor,
+                List<String> wantedTagNames)
+                throws DalResponseException
+        {
+            return visitResults(visitor, wantedTagNames, false);
+        }
+
+        @Override
+        public boolean visitResults(DalResponseRecordVisitor visitor,
+                List<String> wantedTagNames,
+                boolean wantEmptyRecords) throws DalResponseException
+        {
+          boolean result = true;
+
+          List<?> rmetaList = getListAt(DALClient.TAG_RECORD_META);
+          if (rmetaList==null || rmetaList.isEmpty()) {
+              throw new DalResponseException("missing RecordMeta in DAL response"); //$NON-NLS-1$
+          }
+
+          for (Object rmeta : rmetaList) {
+              if (! (rmeta instanceof JsonObject)) {
+                  throw new DalResponseException("Invalid JSON structure in "+DALClient.TAG_RECORD_META);
+              }
+              JsonObject rmetaMap = (JsonObject) rmeta;
+              JsonElement tagnameObj = rmetaMap.get(DALClient.ATTR_TAG_NAME);
+              if (tagnameObj==null) {
+                  throw new DalResponseException("missing RecordMeta/TagName in DAL response");
+              }
+              if (! tagnameObj.isJsonPrimitive()) {
+                  throw new DalResponseException(
+                          String.format("Invalid JSON structure for RecordMeta/TagName in DAL response: %s",
+                                  tagnameObj==null ? "null" : tagnameObj.getClass().getName()));
+              }
+
+              String tagName = tagnameObj.getAsString();
+              List<?> list = getListAt(tagName);
+              if (list==null) {
+                  throw new DalResponseException(String.format("missing entry for '%s' in DAL response", tagName)); //$NON-NLS-1$
+              }
+
+              int count = 0;
+              for (Object item : list) {
+                  if (item instanceof JsonObject) {
+                      JsonObject jsonObject = (JsonObject) item;
+                      DalResponseRecord record = createFrom(requestUrl, tagName, jsonObject);
+                      if (wantEmptyRecords || ! record.isEmpty()) {
+                          if (! visitor.visitResponseRecord(tagName, record)) {
+                              result = false;
+                              break;
+                          }
+                      }
+                  }
+                  else {
+                      throw new DalResponseFormatException(
+                              String.format("unexpected type for '%s'[%d] :%s", //$NON-NLS-1$
+                                      tagName, count, item.getClass().getName()));
+                  }
+                  ++count;
+              }
+
+              if (! result) {
+                  break;
+              }
+          }
+          return result;
+        }
+
 	}
-	
+
 	/**
-	 * Parse the input json string  and return the parse result if it is a Map.
+	 * Parse the input json string  and return the parse result if it is a JsonObject.
 	 * This is because a valid DAL JSON response is always and only of that structure.
 	 * @param json
-	 * @return either Map or null if the input cannot be parsed
+	 * @return either JsonResult or null if the input cannot be parsed
+	 * @throws DalResponseFormatException
 	 */
-	public static JsonResult parseJson(String requestUrl, String json) {
+	public static JsonResult parseJson(String requestUrl, String json) throws DalResponseFormatException {
 		JsonResult result = null;
 		try {
-			JsonMap jsonMap = new JsonParser(json).getMapResult();
-			result = new JsonMap_JsonResult(requestUrl, jsonMap);
-		} catch (ParseException e) {
-			e.printStackTrace();
+		    JsonElement jsonElement = new JsonParser().parse(json);
+		    if (! jsonElement.isJsonObject()) {
+		        throw new DalResponseFormatException(String.format("input is not a JsonObject: %s",
+		                jsonElement.getClass().getName()));
+		    }
+		    result = new JsonResultImpl(requestUrl, (JsonObject) jsonElement);
+		} catch (JsonSyntaxException e) {
+		    throw new DalResponseFormatException(e);
 		}
-		return result;
-	}
-	
-	static private DalResponseRecord createFrom(String requestUrl, String tagName, JsonMap input) {
-		DalResponseRecord result = new DalResponseRecord(requestUrl, tagName);
-		List<String> keys = input.getKeysInOrder();
-		if (! keys.isEmpty()) {
-			for (String key : keys) {
-				Object value = input.get(key);
-				if (value==null) {
-					result.rowdata.put(key, ""); //$NON-NLS-1$
-				}
-				else if (value instanceof List) {
-						List<?> list = (List<?>) value;
-						int count = 0;
-						for (Object elem : list) {
-							if (elem instanceof JsonMap) {
-								JsonMap child = (JsonMap) elem;
-								Map<String,String> childMap = asRowdata(child);
-								if (childMap!=null) {
-									result.addNestedData(key, childMap);
-								}
-							}
-							else {
-								result.warnings.add(String.format("unexpected value-type for '%s'[%d] :%s", //$NON-NLS-1$
-								        key, count, elem.getClass().getName()));
-							}
-						}
-						++count;
-				}
-				else if (value instanceof String) {
-					result.rowdata.put(key, value.toString());
-				}
-				else {
-					result.warnings.add(String.format("unexpected value-type for '%s' :%s", //$NON-NLS-1$
-					        key, value.getClass().getName()));
-				}
-			}
-		}
-		
 		return result;
 	}
 
-	
+	static public DalResponseRecord createFrom(String requestUrl, String tagName, JsonObject input) {
+        DalResponseRecord result = new DalResponseRecord(requestUrl, tagName);
+        for (Map.Entry<String, JsonElement> entry : input.entrySet()) {
+            String key = entry.getKey();
+            JsonElement value = entry.getValue();
+            if (value == null || value.isJsonNull()) {
+                result.rowdata.put(key, "");
+            }
+            else if (value.isJsonArray()) {
+                JsonArray array = (JsonArray) value;
+                int count = 0;
+                for (JsonElement elt : array) {
+                    if (elt!=null && elt.isJsonObject()) {
+                        JsonObject child = (JsonObject) elt;
+                        Map<String, String> childMap = asRowdata(child);
+                        if (childMap != null) {
+                            result.addNestedData(key, childMap);
+                        }
+                    }
+                    else {
+                        result.warnings.add(String.format(
+                                "unexpected value-type for '%s'[%d] :%s", //$NON-NLS-1$
+                                key, count,
+                                elt==null ? "null" : elt.getClass().getName()));
+                    }
+                    ++count;
+                }
+            }
+            else if (value.isJsonPrimitive()) {
+                JsonPrimitive prim = (JsonPrimitive) value;
+                result.rowdata.put(key, prim.getAsString());
+            }
+            else if (value.isJsonObject()) {
+                // ?? perhaps
+                Map<String, String> childMap = asRowdata((JsonObject) value);
+                if (childMap != null) {
+                    result.addNestedData(key, childMap);
+                }
+            }
+            else {
+                result.warnings.add(String.format("unexpected value-type for '%s' :%s", //$NON-NLS-1$
+                        key, value.getClass().getName()));
+            }
+        }
+        return result;
+	}
+
 	/**
 	 * Convert the the input into a Map&lt;String,String&gt;.
 	 * @param input
 	 * @return a Map&lt;String,String&gt;
 	 */
-	static private Map<String, String> asRowdata(JsonMap input)
-	{
-		Map<String, String> result = null;
-		List<String> keys = input.getKeysInOrder();
-		if (! keys.isEmpty()) {
-			result = new LinkedHashMap<String,String>();
-			for (String key : keys) {
-				Object value = input.get(key);
-				if (value==null) {
-					result.put(key, ""); //$NON-NLS-1$
-				}
-				else if (value instanceof List) {
-					// Hmmm. 
-					// TODO array, Collection, JsonMap, Map??
-					// ? what can we get from JsonParser?
-				}
-				else if (value instanceof JsonMap) {
-					// Hmmm. this is unexpected
-				}
-				else {
-					result.put(key, value.toString());
-				}
-			}
-		}
-		return result;
+	static private Map<String, String> asRowdata(JsonObject input) {
+        Map<String, String> result = null;
+        Set<Map.Entry<String, JsonElement>> entrySet = input.entrySet();
+        if (entrySet != null && ! entrySet.isEmpty()) {
+            for (Map.Entry<String, JsonElement> entry : entrySet) {
+                if (result == null) {
+                    result = new LinkedHashMap<>();
+                }
+                String key = entry.getKey();
+                JsonElement value = entry.getValue();
+                if (value==null || value.isJsonNull()) {
+                    result.put(key, "");
+                }
+                else {
+                    result.put(key, value.getAsString());
+                }
+            }
+        }
+        return result;
 	}
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// XML tools
-	
+
 	public static Document createXmlDocument(String xml)
 	throws ParserConfigurationException, SAXException, IOException
 	{
@@ -748,20 +770,20 @@ public class DalUtil {
 		return xmldoc;
 	}
 	public static boolean visitXmlResults(
-            String requestUrl, 
-            Document xmldoc, 
-            List<String> tagNames, 
-            DalResponseRecordVisitor visitor) 
+            String requestUrl,
+            Document xmldoc,
+            List<String> tagNames,
+            DalResponseRecordVisitor visitor)
     {
 	    return visitXmlResults(requestUrl, xmldoc, tagNames, visitor, false);
     }
-	
+
 	public static boolean visitXmlResults(
-	        String requestUrl, 
-	        Document xmldoc, 
-	        List<String> tagNames, 
+	        String requestUrl,
+	        Document xmldoc,
+	        List<String> tagNames,
 	        DalResponseRecordVisitor visitor,
-	        boolean wantEmptyRecords) 
+	        boolean wantEmptyRecords)
 	{
 		boolean result = true;
 		for (String tagName : tagNames) {
@@ -785,7 +807,7 @@ public class DalUtil {
 		return result;
 	}
 
-	
+
 	public static DalResponseRecord createFrom(String requestUrl, Node node) {
 		DalResponseRecord result = new DalResponseRecord(requestUrl, node.getNodeName());
 		NamedNodeMap attributes = node.getAttributes();
@@ -796,7 +818,7 @@ public class DalUtil {
 				result.rowdata.put(attr.getNodeName(), attr.getNodeValue());
 			}
 		}
-		
+
 		NodeList childNodes = node.getChildNodes();
 		int nChildNodes = childNodes.getLength();
 		if (nChildNodes>0) {
@@ -811,17 +833,17 @@ public class DalUtil {
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public static Map<String,String> asRowdata(Node node) {
 		Map<String,String> result = null;
-	
+
 		NamedNodeMap attributes = node.getAttributes();
 		if (attributes!=null) {
 			int nAttributes = attributes.getLength();
-			result = new LinkedHashMap<String,String>(nAttributes);
+			result = new LinkedHashMap<>(nAttributes);
 			for (int ai = 0; ai < nAttributes; ++ai) {
 				Node attr = attributes.item(ai);
 				result.put(attr.getNodeName(), attr.getNodeValue());
@@ -829,7 +851,7 @@ public class DalUtil {
 		}
 		return result;
 	}
-	
+
 	public static void showXmlResult(String xml, OutputStream out) {
 		if (looksLikeDoctype(xml)) {
 			// just print it!
@@ -863,14 +885,14 @@ public class DalUtil {
 			}
 		}
 	}
-	
+
 	public static void writeXmlViaDocument(String xml, Writer w) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 	        InputSource is = new InputSource(new StringReader(xml));
 	        Document xmldoc = builder.parse(is);
-	        
+
 	        printXmlDocument(xmldoc, w);
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
@@ -883,12 +905,12 @@ public class DalUtil {
 		}
 
 	}
-	
+
 	public static void writeXmlResult(String xml, Writer w) throws IOException, TransformerException {
 		StreamSource source = new StreamSource(new StringReader(xml));
 
 	    TransformerFactory tf = TransformerFactory.newInstance();
-	    
+
 	    Transformer transformer = tf.newTransformer();
 	    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no"); //$NON-NLS-1$
 	    transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
@@ -898,23 +920,23 @@ public class DalUtil {
 
 	    transformer.transform(source, new StreamResult(w));
 	}
-	
+
 	public static void printXmlDocument(Document doc, Writer w) throws IOException, TransformerException {
 
 	    TransformerFactory tf = TransformerFactory.newInstance();
-	    
+
 	    Transformer transformer = tf.newTransformer();
 	    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no"); //$NON-NLS-1$
 	    transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
 	    transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 	    transformer.setOutputProperty(OutputKeys.ENCODING, ENCODING_UTF_8);
 	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
-	    
 
-	    transformer.transform(new DOMSource(doc), 
+
+	    transformer.transform(new DOMSource(doc),
 	         new StreamResult(w));
 	}
-	
+
 	/**
 	 * If the Throwable parameter is an instance of DalResponseHttpException,
 	 * extract the error message from it. Otherwise return null.
@@ -938,8 +960,8 @@ public class DalUtil {
 		}
 		return errmsg;
 	}
-	
-	
+
+
 	/**
 	 * <p>
 	 * Extract the &lt;Error Message="..." /&gt; from the XML response.
@@ -964,7 +986,8 @@ public class DalUtil {
 			Node item = errorElements.item(0);
 			NamedNodeMap attributes = item.getAttributes();
 			if (attributes==null) {
-				result = "No attributes available in 'Error' element"; //$NON-NLS-1$
+				result = String.format("No attributes available in '%s' element",  //$NON-NLS-1$
+				        DALClient.TAG_ERROR);
 			}
 			else {
 				// We will get them *all*.
@@ -983,7 +1006,7 @@ public class DalUtil {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Return the named attribute from the specified element in the (XML) document.
 	 * @param doc
@@ -994,7 +1017,7 @@ public class DalUtil {
 	static public String getElementAttributeValue(Document doc, String tagName, String attributeName) {
 		return getAttributeValue(doc.getElementsByTagName(tagName), attributeName);
 	}
-	
+
 	/**
 	 * Return the value of the named attribute from the first Node in the NodeList
 	 * or null if the NodeList is empty or the attribute is not present.
@@ -1016,26 +1039,43 @@ public class DalUtil {
 		}
 		return result;
 	}
-	
-	public static List<DalResponseRecord> collectResponseRecords(DalResponse response) throws DalResponseFormatException, DalResponseException {
-		return collectResponseRecords(response, null);
+
+    public static List<DalResponseRecord> collectResponseRecords(DalResponse response) throws DalResponseFormatException, DalResponseException {
+		return collectResponseRecords(response, (Predicate<String>) null);
 	}
 
-	public static List<DalResponseRecord> collectResponseRecords(DalResponse response, final Predicate<String> tagNamePredicate) 
-	throws DalResponseFormatException, DalResponseException
-	{
-		final List<DalResponseRecord> result = new ArrayList<DalResponseRecord>();
-		response.visitResults(new DalResponseRecordVisitor() {
-			@Override
-			public boolean visitResponseRecord(String resultTagName, DalResponseRecord data) {
-				if (tagNamePredicate==null || tagNamePredicate.evaluate(resultTagName)) {
-					result.add(data);
-				}
-				return true;
-			}
-		});
-		return result;
-	}
+    public static List<DalResponseRecord> collectResponseRecords(DalResponse response, final Predicate<String> tagNamePredicate)
+    throws DalResponseFormatException, DalResponseException
+    {
+        final List<DalResponseRecord> result = new ArrayList<>();
+        response.visitResults(new DalResponseRecordVisitor() {
+            @Override
+            public boolean visitResponseRecord(String resultTagName, DalResponseRecord data) {
+                if (tagNamePredicate==null || tagNamePredicate.evaluate(resultTagName)) {
+                    result.add(data);
+                }
+                return true;
+            }
+        });
+        return result;
+    }
+
+//    public static List<DalResponseRecord> collectResponseRecords(DalResponse response,
+//            final java.util.function.Predicate<String> tagNamePredicate)
+//    throws DalResponseFormatException, DalResponseException
+//    {
+//        final List<DalResponseRecord> result = new ArrayList<DalResponseRecord>();
+//        response.visitResults(new DalResponseRecordVisitor() {
+//            @Override
+//            public boolean visitResponseRecord(String resultTagName, DalResponseRecord data) {
+//                if (tagNamePredicate==null || tagNamePredicate.test(resultTagName)) {
+//                    result.add(data);
+//                }
+//                return true;
+//            }
+//        });
+//        return result;
+//    }
 
 	/**
 	 * Check if the input appears to be a DOCTYPE response.
@@ -1051,20 +1091,20 @@ public class DalUtil {
 		return httpStatusCode >= 200 && httpStatusCode < 300;
 	}
 
-	
+
 	static private enum SplitState {
 		LOOKING_FOR_SEPARATOR,
 		IN_QUOTE,
 		LOOKING_FOR_SECOND
 		;
 	}
-	
+
 	static public String[] splitCsvLine(String line, char columnSeparator, char quoteCharacter) {
 		return splitCsvLine(line, columnSeparator, quoteCharacter, null);
 	}
 
 	static public String[] splitCsvLine(String line, char columnSeparator, char quoteCharacter, String[] headings) {
-		
+
 		// Short circuit if no quote characters in the line
 		if (line.indexOf(quoteCharacter)<0) {
 			return line.split(Pattern.quote(Character.toString(columnSeparator)), -1);
@@ -1120,7 +1160,7 @@ public class DalUtil {
 			}
 		}
 		result.add(field.toString());
-		
+
 		return result.toArray(new String[result.size()]);
 	}
 

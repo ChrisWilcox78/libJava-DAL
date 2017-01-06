@@ -1,20 +1,20 @@
 /*
  * dalclient library - provides utilities to assist in using KDDart-DAL servers
- * Copyright (C) 2015  Diversity Arrays Technology
- *
+ * Copyright (C) 2015,2016,2017 Diversity Arrays Technology
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package com.diversityarrays.dalclient;
 
 import java.io.File;
@@ -48,27 +48,27 @@ import com.diversityarrays.dalclient.util.Pair;
  *
  */
 public class HttpPostBuilder {
-	
+
 	private static final Charset ISO_8859_1 = Charset.forName("ISO-8859-1"); //$NON-NLS-1$
 	private static final Charset UTF_8 = Charset.forName("UTF-8"); //$NON-NLS-1$
-	
+
 	private DalHttpFactory dalHttpFactory;
 	private String dalCommandUrl;
 	private ResponseType responseType = ResponseType.XML;
-	private List<Pair<String,String>> collectedPairs = new ArrayList<Pair<String,String>>();
+	private List<Pair<String,String>> collectedPairs = new ArrayList<>();
 	private Charset charset = ISO_8859_1;
 	private final Log log;
 
 	public HttpPostBuilder(DalHttpFactory dalHttpFactory, String dalCommandUrl) {
 		this(dalHttpFactory, dalCommandUrl, null);
 	}
-	
+
 	public HttpPostBuilder(DalHttpFactory dalHttpFactory, String dalCommandUrl, Log log) {
 		this.dalHttpFactory = dalHttpFactory;
 		this.dalCommandUrl = dalCommandUrl;
 		this.log = log;
 	}
-	
+
 	/**
 	 * Set the Charset to be used to build the HTTP request.
 	 * The default is ISO-8859-1.
@@ -79,7 +79,7 @@ public class HttpPostBuilder {
 		this.charset = charset;
 		return this;
 	}
-	
+
 	/**
 	 * Set the ResponseType to be used by DAL in responding to this operation.
 	 * @param responseType
@@ -100,10 +100,10 @@ public class HttpPostBuilder {
 	 * @return this HttpPostBuilder
 	 */
 	public HttpPostBuilder addParameter(String name, String value) {
-		collectedPairs.add(new Pair<String,String>(name, value));
+		collectedPairs.add(new Pair<>(name, value));
 		return this;
 	}
-	
+
 	/**
 	 * Add a number of named parameters for this POST request.
 	 * @param params
@@ -113,49 +113,49 @@ public class HttpPostBuilder {
 		collectedPairs.addAll(params);
 		return this;
 	}
-	
+
 	/**
 	 * Create and return an HttpPost instance using the supplied
 	 * parameters, ResponseType etc.
 	 * @return an HttpPost instance
 	 */
 	public DalRequest build() {
-		
+
 		// Only need to add the ctype parameter if not XML because XML
 		// is the DAL server's default response format.
 		if (! responseType.isXML()) {
-			collectedPairs.add(new Pair<String,String>("ctype", responseType.postValue)); //$NON-NLS-1$
+			collectedPairs.add(new Pair<>("ctype", responseType.postValue)); //$NON-NLS-1$
 		}
-		
+
 		DalRequest result = dalHttpFactory.createHttpPost(dalCommandUrl, collectedPairs, UTF_8);
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Create and return an HttpPost instance for use in an UPDATE-class DAL operation.
 	 * @param writeKey
 	 * @return a DalRequest
 	 */
 	public DalRequest buildForUpdate(String writeKey) {
-		
+
 		List<Pair<String,String>> forPost = collectPairsForUpdate(writeKey, null);
 
 		return dalHttpFactory.createHttpPost(dalCommandUrl, forPost, charset);
 	}
-	
+
 	/**
 	 * This entry is provided to support debugging.
 	 * @param writeKey the token provided by DAL on a successful login
 	 * @param returnDataForSignature if non-null then it receives the concatenated data values
-	 * @return a List of Pair&lt;String,String&gt; 
+	 * @return a List of Pair&lt;String,String&gt;
 	 */
 	public List<Pair<String,String>> collectPairsForUpdate(String writeKey, StringBuilder returnDataForSignature) {
 		String rand_num = DalUtil.createRandomNumberString();
 
 		StringBuilder dataForSignature = new StringBuilder(dalCommandUrl);
 		StringBuilder namesInOrder = new StringBuilder();
-		
+
 		dataForSignature.append(rand_num);
 		for (Pair<String,String> pair : collectedPairs) {
 			String value = pair.b;
@@ -174,24 +174,24 @@ public class HttpPostBuilder {
 		}
 		String signature = DalUtil.computeHmacSHA1(writeKey, forSignature);
 
-		List<Pair<String,String>> forPost = new ArrayList<Pair<String,String>>(collectedPairs);
-		
-		forPost.add(new Pair<String,String>("rand_num", rand_num)); //$NON-NLS-1$
-		forPost.add(new Pair<String,String>("url", dalCommandUrl)); //$NON-NLS-1$
-		forPost.add(new Pair<String,String>("param_order", namesInOrder.toString())); //$NON-NLS-1$
-		forPost.add(new Pair<String,String>("signature", signature)); //$NON-NLS-1$
+		List<Pair<String,String>> forPost = new ArrayList<>(collectedPairs);
+
+		forPost.add(new Pair<>("rand_num", rand_num)); //$NON-NLS-1$
+		forPost.add(new Pair<>("url", dalCommandUrl)); //$NON-NLS-1$
+		forPost.add(new Pair<>("param_order", namesInOrder.toString())); //$NON-NLS-1$
+		forPost.add(new Pair<>("signature", signature)); //$NON-NLS-1$
 
 		if (! responseType.isXML()) {
-			forPost.add(new Pair<String,String>("ctype", responseType.postValue)); //$NON-NLS-1$
+			forPost.add(new Pair<>("ctype", responseType.postValue)); //$NON-NLS-1$
 		}
-		
+
 		if (log!=null && log.isDebugEnabled()) {
 			log.debug(this.getClass().getName() + ".collectPairsForUpdate("+writeKey+")"); //$NON-NLS-1$ //$NON-NLS-2$
 			for (Pair<String,String> nvp : forPost) {
 				log.debug("  "+nvp.a+"="+nvp.b); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
-		
+
 		return forPost;
 	}
 
@@ -220,10 +220,10 @@ public class HttpPostBuilder {
 			namesInOrderBuilder.append(pair.a).append(',');
 		}
 		dataForSignature.append(md5);
-		
+
 		String namesInOrder = namesInOrderBuilder.toString();
 		String signature = DalUtil.computeHmacSHA1(writeKey, dataForSignature.toString());
-		
+
 		if (log!=null && log.isDebugEnabled()) {
 			log.debug(this.getClass().getName() + ".buildForUpload("+writeKey+" , File=" + fileForUpload.getPath() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			log.debug("  dataForSignature="+dataForSignature); //$NON-NLS-1$
@@ -231,16 +231,16 @@ public class HttpPostBuilder {
 			log.debug("  signature="+signature); //$NON-NLS-1$
 			log.debug("  fileSize="+fileForUpload.length()); //$NON-NLS-1$
 		}
-		
+
 		return dalHttpFactory.createForUpload(dalCommandUrl, collectedPairs, rand_num, namesInOrder, signature, fileForUpload);
 
 	}
-	
+
 	/**
 	 * Create an HttpPost instance for uploading an InputStream using the other supplied
 	 * parameters, ResponseType etc.
 	 * @param writeKey
-	 * @param factory Factory&lt;InputStream&gt; 
+	 * @param factory Factory&lt;InputStream&gt;
 	 * @return an DalRequest instance
 	 */
 	public DalRequest buildForUpload(String writeKey, Factory<InputStream> factory)
@@ -254,8 +254,8 @@ public class HttpPostBuilder {
 
 		StringBuilder namesInOrderBuilder = new StringBuilder();
 		for (Pair<String,String> pair : collectedPairs) {
-			dataForSignature.append(pair.a);
-			namesInOrderBuilder.append(pair.b).append(',');
+			dataForSignature.append(pair.b);
+			namesInOrderBuilder.append(pair.a).append(',');
 		}
 		dataForSignature.append(md5);
 		String namesInOrder = namesInOrderBuilder.toString();
@@ -269,7 +269,7 @@ public class HttpPostBuilder {
 			log.debug("  signature="+signature); //$NON-NLS-1$
 		}
 
-		return dalHttpFactory.createForUpload(dalCommandUrl, collectedPairs, rand_num, namesInOrder, signature, factory);	
+		return dalHttpFactory.createForUpload(dalCommandUrl, collectedPairs, rand_num, namesInOrder, signature, factory);
 	}
 
 }

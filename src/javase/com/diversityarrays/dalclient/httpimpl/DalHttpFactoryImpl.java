@@ -1,20 +1,20 @@
 /*
  * dalclient library - provides utilities to assist in using KDDart-DAL servers
- * Copyright (C) 2015  Diversity Arrays Technology
- *
+ * Copyright (C) 2015,2016,2017 Diversity Arrays Technology
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package com.diversityarrays.dalclient.httpimpl;
 
 import java.io.File;
@@ -58,7 +58,9 @@ public class DalHttpFactoryImpl implements DalHttpFactory {
 
 	@Override
 	public DalRequest createHttpGet(String url) {
-		return new DalRequestImpl(new HttpGet(url));
+		HttpGet httpGet = new HttpGet(url);
+		httpGet.setHeader("Cache-Control", "no-cache");
+        return new DalRequestImpl(httpGet);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -94,13 +96,9 @@ public class DalHttpFactoryImpl implements DalHttpFactory {
 	
 
 	@Override
-	public DalRequest createForUpload(String url, 
-	        List<Pair<String,String>> pairs, 
-	        String rand_num, 
-	        String namesInOrder, 
-	        String signature, 
-	        File fileForUpload) 
-	{
+	public DalRequest createForUpload(String url, List<Pair<String,String>> pairs, String rand_num, String namesInOrder, String signature, File fileForUpload) {
+
+		
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 		for (Pair<String,String> pair : pairs) {
 			builder.addTextBody(pair.a, pair.b);
@@ -124,11 +122,8 @@ public class DalHttpFactoryImpl implements DalHttpFactory {
 
 
 	@Override
-	public DalRequest createForUpload(String url, 
-	        List<Pair<String,String>> pairs,
-			String rand_num, 
-			String namesInOrder, 
-			String signature,
+	public DalRequest createForUpload(String url, List<Pair<String,String>> pairs,
+			String rand_num, String namesInOrder, String signature,
 			Factory<InputStream> factory) 
 	{
 		

@@ -1,6 +1,6 @@
 /*
  * dalclient library - provides utilities to assist in using KDDart-DAL servers
- * Copyright (C) 2015  Diversity Arrays Technology
+ * Copyright (C) 2015,2016,2017  Diversity Arrays Technology
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ import com.diversityarrays.dalclient.http.DalHttpFactory;
 import com.diversityarrays.dalclient.http.DalRequest;
 import com.diversityarrays.dalclient.http.DalResponseHandler;
 import com.diversityarrays.dalclient.util.Pair;
+
 
 public class AndroidDalHttpFactory implements DalHttpFactory {
 

@@ -1,6 +1,6 @@
 /*
  * dalclient library - provides utilities to assist in using KDDart-DAL servers
- * Copyright (C) 2015  Diversity Arrays Technology
+ * Copyright (C) 2015,2016,2017  Diversity Arrays Technology
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,16 @@ package com.diversityarrays.dalclient.httpandroid;
 import java.io.Closeable;
 import java.io.IOException;
 
+import java.net.HttpCookie;
+import java.util.ArrayList;
+import java.util.List;
+
+
 import ch.boye.httpclientandroidlib.client.methods.CloseableHttpResponse;
 import ch.boye.httpclientandroidlib.impl.client.CloseableHttpClient;
+import ch.boye.httpclientandroidlib.client.protocol.HttpClientContext;
+import ch.boye.httpclientandroidlib.client.CookieStore;
+import ch.boye.httpclientandroidlib.cookie.Cookie;
 
 import com.diversityarrays.dalclient.http.DalCloseableHttpClient;
 import com.diversityarrays.dalclient.http.DalCloseableHttpResponse;
@@ -30,9 +38,15 @@ import com.diversityarrays.dalclient.http.DalRequest;
 public class AndroidDalCloseableHttpClient implements DalCloseableHttpClient, Closeable {
 
 	private CloseableHttpClient client;
+    private final List<HttpCookie> httpCookies = new ArrayList<>();
 
 	public AndroidDalCloseableHttpClient(CloseableHttpClient client) {
 		this.client = client;
+	}
+
+	@Override
+	public List<HttpCookie> getHttpCookies() {
+	    return httpCookies;
 	}
 
 	@Override
@@ -42,11 +56,22 @@ public class AndroidDalCloseableHttpClient implements DalCloseableHttpClient, Cl
 
 	@Override
 	public DalCloseableHttpResponse execute(DalRequest request) throws IOException {
-		
+
 		AndroidDalRequest androidRequest = (AndroidDalRequest) request;
-		
-		CloseableHttpResponse response = client.execute(androidRequest.httpRequest);
-		
-		return new AndroidDalCloseableResponse(response);
+
+		HttpClientContext context = HttpClientContext.create();
+		CloseableHttpResponse response = client.execute(androidRequest.httpRequest, context);
+		CookieStore cookieStore = context.getCookieStore();
+
+		List<HttpCookie> list = new ArrayList<>();
+        if (cookieStore != null) {
+            for (Cookie cookie : cookieStore.getCookies()) {
+                list.add(new HttpCookie(cookie.getName(), cookie.getValue()));
+            }
+        }
+        httpCookies.clear();
+        httpCookies.addAll(list);
+
+        return new AndroidDalCloseableResponse(response);
 	}
 }
