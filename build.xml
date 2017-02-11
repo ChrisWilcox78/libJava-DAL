@@ -1,187 +1,185 @@
 <project name="dalclient" default="all" basedir=".">
 
-    <property name="build.dir" value="${basedir}/build" />
-	<property name="src-main.dir"    value="${basedir}/src/main" />
-	<property name="src-javase.dir"  value="${basedir}/src/javase" />
-	<property name="src-android.dir" value="${basedir}/src/android/main" />
-	<property name="src-test.dir"    value="${basedir}/src/test" />
+  <property name="build.dir" value="${basedir}/build" />
+  <property name="src-main.dir"    value="${basedir}/src/main" />
+  <property name="src-javase.dir"  value="${basedir}/src/javase" />
+  <property name="src-android.dir" value="${basedir}/src/android/main" />
+  <property name="src-test.dir"    value="${basedir}/src/test" />
 
-	<path id="dalclient-core.class.path">
-	    <fileset dir="lib">
-	        <include name="collections-generic-4.01.jar" />
-	        <include name="commons-codec-1.6.jar" />
-	        <include name="commons-logging-1.1.3.jar" />
-	        <include name="gson-2.3.1.jar" />
-	    </fileset>
-	</path>
+  <path id="dalclient-core.class.path">
+    <fileset dir="lib">
+      <include name="collections-generic-4.01.jar" />
+      <include name="commons-codec-1.6.jar" />
+      <include name="commons-logging-1.1.3.jar" />
+      <include name="gson-2.3.1.jar" />
+    </fileset>
+  </path>
 
-	<path id="dalclient-android.class.path">
-	    <fileset dir="lib">
-	        <include name="collections-generic-4.01.jar" />
-	        <include name="android-17.jar" />
-	        <include name="httpclientandroidlib-1.2.1.jar" />
-	        <include name="gson-2.3.1.jar" />
-	    </fileset>
-	    <fileset dir=".">
-	        <include name="dalclient-core.jar" />
-	    </fileset>
-	</path>
+  <path id="dalclient-android.class.path">
+    <fileset dir="lib">
+      <include name="dalclient-core.jar" />
 
-
-	<path id="dalclient-javase.class.path">
-	    <fileset dir="lib">
-	        <include name="collections-generic-4.01.jar" />
-	        <include name="httpclient-4.3.jar" />
-	        <include name="httpcore-4.3.jar" />
-	        <include name="httpmime-4.3.jar" />
-	    </fileset>
-	    <fileset dir=".">
-	        <include name="dalclient-core.jar" />
-	    </fileset>
-	</path>
-
-	<!-- ================================================================ -->
-
-	<target name="all" depends="dalclient-core.jar,dalclient-javase.jar,dalclient-android.jar">
-	</target>
-
-	<!-- ================================================================ -->
-
-	<target name="prepare-dalclient-core">
-		<delete dir="${build.dir}/dalclient-core" />
-		<mkdir dir="${build.dir}" />
-		<mkdir dir="${build.dir}/dalclient-core" />
-	</target>
-
-	<target name="dalclient-core.jar" depends="prepare-dalclient-core">
-	    <javac includeantruntime="false"
-	        debug="true" source="1.7" target="1.7"
-	        destdir="${build.dir}/dalclient-core">
-
-	        <classpath refid="dalclient-core.class.path" />
-
-	        <src path="${src-main.dir}" />
-
-	        <include name="com/diversityarrays/dalclient/*.java" />
-	        <include name="com/diversityarrays/dalclient/util/*.java" />
-	        <include name="com/diversityarrays/dalclient/http/*.java" />
-	    </javac>
-
-	    <jar destfile="dalclient-core.jar" basedir="${build.dir}/dalclient-core">
-			<manifest>
-				<attribute name="Main-Class"
-					value="com.diversityarrays.dalclient.Main" />
-			</manifest>
-	    </jar>
-
-	</target>
-
-	<!-- ================================================================ -->
-
-	<target name="prepare-dalclient-android">
-		<delete dir="${build.dir}/dalclient-android" />
-		<mkdir dir="${build.dir}" />
-		<mkdir dir="${build.dir}/dalclient-android" />
-	</target>
-
-	<target name="dalclient-android.jar" depends="prepare-dalclient-android">
-	    <javac includeantruntime="false"
-	        debug="true" source="1.7" target="1.7"
-	        destdir="${build.dir}/dalclient-android">
-
-	        <classpath refid="dalclient-android.class.path" />
-
-	        <src path="${src-android.dir}" />
-
-	        <include name="com/diversityarrays/dalclient/httpandroid/*.java" />
-	        <include name="com/diversityarrays/dalclient/util/*.java" />
-	    </javac>
-
-	    <jar destfile="dalclient-android.jar" basedir="${build.dir}/dalclient-android">
-	    </jar>
-	</target>
-
-	<!-- ================================================================ -->
-
-	<target name="prepare-dalclient-javase">
-		<delete dir="${build.dir}/dalclient-javase" />
-		<mkdir dir="${build.dir}" />
-		<mkdir dir="${build.dir}/dalclient-javase" />
-	</target>
+      <include name="collections-generic-4.01.jar" />
+      <include name="android-17.jar" />
+      <include name="httpclientandroidlib-1.2.1.jar" />
+      <include name="gson-2.3.1.jar" />
+    </fileset>
+  </path>
 
 
-	<target name="dalclient-javase.jar" depends="prepare-dalclient-javase">
-	    <javac includeantruntime="false"
-	        debug="true" source="1.7" target="1.7"
-	        destdir="${build.dir}/dalclient-javase">
+  <path id="dalclient-javase.class.path">
+    <fileset dir="lib">
+      <include name="dalclient-core.jar" />
 
-	        <classpath refid="dalclient-javase.class.path" />
+      <include name="collections-generic-4.01.jar" />
+      <include name="httpclient-4.3.jar" />
+      <include name="httpcore-4.3.jar" />
+      <include name="httpmime-4.3.jar" />
+    </fileset>
+  </path>
 
-	        <src path="${src-javase.dir}" />
+  <!-- ================================================================ -->
 
-	        <include name="com/diversityarrays/dalclient/httpimpl/*.java" />
-	    </javac>
+  <target name="all" depends="dalclient-core.jar,dalclient-javase.jar,dalclient-android.jar">
+  </target>
 
-	    <jar destfile="dalclient-javase.jar" basedir="${build.dir}/dalclient-javase">
-	    </jar>
+  <!-- ================================================================ -->
 
-	</target>
+  <target name="prepare-dalclient-core">
+    <delete dir="${build.dir}/dalclient-core" />
+    <mkdir dir="${build.dir}" />
+    <mkdir dir="${build.dir}/dalclient-core" />
+  </target>
 
-	<!-- ================================================================ -->
+  <target name="dalclient-core.jar" depends="prepare-dalclient-core">
+    <javac includeantruntime="false"
+	   debug="true" source="1.7" target="1.7"
+	   destdir="${build.dir}/dalclient-core">
 
-	<path id="javadoc-demo.class.path">
+      <classpath refid="dalclient-core.class.path" />
 
-	  
-	  <fileset dir=".">
-	    <include name="dalclient-core.jar" />
-	    <include name="dalclient-javase.jar" />
-	  </fileset>
+      <src path="${src-main.dir}" />
 
-	    <fileset dir="lib">
-	        <include name="collections-generic-4.01.jar" />
-		<include name="commons-codec-1.6.jar" />
-		<include name="commons-logging-1.1.3.jar" />
-		<include name="httpclient-4.3.jar" />
-		<include name="httpcore-4.3.jar" />
-		<include name="httpmime-4.3.jar" />
-	    </fileset>
-	</path>
+      <include name="com/diversityarrays/dalclient/*.java" />
+      <include name="com/diversityarrays/dalclient/util/*.java" />
+      <include name="com/diversityarrays/dalclient/http/*.java" />
+    </javac>
 
-	<pathconvert property="javadoc-demo_manifest_cp"
-		     pathsep=" "
-		     refid="javadoc-demo.class.path">
-	</pathconvert>
+    <jar destfile="lib/dalclient-core.jar" basedir="${build.dir}/dalclient-core">
+      <manifest>
+	<attribute name="Main-Class"
+		   value="com.diversityarrays.dalclient.Main" />
+      </manifest>
+    </jar>
 
-	<target name="prepare-javadoc-demo">
-	  <delete dir="${build.dir}/javadoc-demo" />
-	  <mkdir dir="${build.dir}" />
-	  <mkdir dir="${build.dir}/javadoc-demo" />
-	</target>
+  </target>
 
-	<target name="javadoc-demo.jar" depends="prepare-javadoc-demo">
+  <!-- ================================================================ -->
 
-	  <javac includeantruntime="false"
-	         debug="true" source="1.7" target="1.7"
-	         destdir="${build.dir}/javadoc-demo">
+  <target name="prepare-dalclient-android">
+    <delete dir="${build.dir}/dalclient-android" />
+    <mkdir dir="${build.dir}" />
+    <mkdir dir="${build.dir}/dalclient-android" />
+  </target>
 
-	    <classpath refid="javadoc-demo.class.path" />
+  <target name="dalclient-android.jar" depends="prepare-dalclient-android">
+    <javac includeantruntime="false"
+	   debug="true" source="1.7" target="1.7"
+	   destdir="${build.dir}/dalclient-android">
 
-	    <src path="${src-test.dir}" />
+      <classpath refid="dalclient-android.class.path" />
 
-	    <include name="com/diversityarrays/dalclient/JavadocDALClientDemo.java" />
-	  </javac>
+      <src path="${src-android.dir}" />
 
-	  <jar destfile="javadoc-demo.jar"
-	       basedir="${build.dir}/javadoc-demo">
-	    <manifest>
-	      <attribute name="Main-Class"
-			 value="com.diversityarrays.dalclient.JavadocDALClientDemo" />
-	      <attribute name="Class-Path"
-			 value="${javadoc-demo_manifest_cp}" />
-	    </manifest>
-	  </jar>
+      <include name="com/diversityarrays/dalclient/httpandroid/*.java" />
+      <include name="com/diversityarrays/dalclient/util/*.java" />
+    </javac>
 
-	</target>
+    <jar destfile="lib/dalclient-android.jar" basedir="${build.dir}/dalclient-android">
+    </jar>
+  </target>
+
+  <!-- ================================================================ -->
+
+  <target name="prepare-dalclient-javase">
+    <delete dir="${build.dir}/dalclient-javase" />
+    <mkdir dir="${build.dir}" />
+    <mkdir dir="${build.dir}/dalclient-javase" />
+  </target>
+
+
+  <target name="dalclient-javase.jar" depends="prepare-dalclient-javase">
+    <javac includeantruntime="false"
+	   debug="true" source="1.7" target="1.7"
+	   destdir="${build.dir}/dalclient-javase">
+
+      <classpath refid="dalclient-javase.class.path" />
+
+      <src path="${src-javase.dir}" />
+
+      <include name="com/diversityarrays/dalclient/httpimpl/*.java" />
+    </javac>
+
+    <jar destfile="lib/dalclient-javase.jar" basedir="${build.dir}/dalclient-javase">
+    </jar>
+
+  </target>
+
+  <!-- ================================================================ -->
+
+  <path id="javadoc-demo.class.path">
+    <fileset dir="lib">
+      <include name="dalclient-core.jar" />
+      <include name="dalclient-javase.jar" />
+
+      <include name="collections-generic-4.01.jar" />
+      <include name="commons-codec-1.6.jar" />
+      <include name="commons-logging-1.1.3.jar" />
+      <include name="httpclient-4.3.jar" />
+      <include name="httpcore-4.3.jar" />
+      <include name="httpmime-4.3.jar" />
+      <include name="gson-2.3.1.jar" />
+    </fileset>
+  </path>
+
+  <pathconvert property="javadoc-demo_manifest_cp"
+	       pathsep=" "
+	       refid="javadoc-demo.class.path">
+    <map from="${basedir}/" to="" />
+  </pathconvert>
+
+  <target name="prepare-javadoc-demo">
+    <delete dir="${build.dir}/javadoc-demo" />
+    <mkdir dir="${build.dir}" />
+    <mkdir dir="${build.dir}/javadoc-demo" />
+  </target>
+
+  <target name="javadoc-demo.jar" depends="prepare-javadoc-demo">
+
+    <javac includeantruntime="false"
+	   debug="true" source="1.7" target="1.7"
+	   destdir="${build.dir}/javadoc-demo">
+
+      <classpath refid="javadoc-demo.class.path" />
+
+      <src path="${src-test.dir}" />
+
+      <include name="com/diversityarrays/dalclient/JavadocDALClientDemo.java" />
+    </javac>
+
+    <echo message="MANIFEST_CP=${javadoc-demo_manifest_cp}" />
+
+    <jar destfile="javadoc-demo.jar"
+	 basedir="${build.dir}/javadoc-demo">
+      <manifest>
+	<attribute name="Main-Class"
+		   value="com.diversityarrays.dalclient.JavadocDALClientDemo" />
+	<attribute name="Class-Path"
+		   value="${javadoc-demo_manifest_cp}" />
+      </manifest>
+    </jar>
+
+  </target>
 
 
 </project>
