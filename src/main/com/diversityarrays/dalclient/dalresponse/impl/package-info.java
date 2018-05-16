@@ -15,26 +15,5 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.dalresponse.impl;
 
-/**
- * This DalResponseException subclass is only thrown when the response
- * problem is caused by an HTTP error code. The message includes both
- * the HTTP error reason as well as and DAL "Error" information.
- * @author brian
- *
- */
-public class DalResponseHttpException extends DalResponseException {
-
-	public final String dalErrorMessage;
-	public final String url;
-	public final HttpResponseInfo responseInfo;
-
-	public DalResponseHttpException(String message, String dalErrorMessage, String url, HttpResponseInfo responseInfo) {
-		super(message);
-		this.dalErrorMessage = dalErrorMessage;
-		this.url = url;
-		this.responseInfo = responseInfo;
-	}
-
-}

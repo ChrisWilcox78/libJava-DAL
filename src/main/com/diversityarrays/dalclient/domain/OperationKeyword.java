@@ -15,31 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.domain;
 
-/**
- * Parent of the tree of all DAL related exceptions in this package.
- * If you find the specific exception clauses too verbose, just catch this one
- * in your catch clause without having to go too far by catching <b>Exception</b>
- * (because that's not good practice).
- * @author brian
- *
- */
-public class DalException extends Exception {
-
-	public DalException() {
+public enum OperationKeyword {
+	FILTERING("Filtering"), //$NON-NLS-1$
+	SORTING("Sorting"), //$NON-NLS-1$
+	GROUP_BY_FIELD("GroupByField"), //$NON-NLS-1$
+	;
+	
+	public final String value;
+	OperationKeyword(String s) {
+		this.value = s;
 	}
-
-	public DalException(String message) {
-		super(message);
+	
+	@Override
+	public String toString() {
+		return value;
 	}
-
-	public DalException(Throwable cause) {
-		super(cause);
-	}
-
-	public DalException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 }

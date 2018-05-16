@@ -15,27 +15,5 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.domain;
 
-
-/**
- * <p>
- * Provide an implementation of this when you wish to process one or more of the records
- * returned by a DAL command. You can short-circuit this processing by returning false
- * when you do not wish to process any further records.
- * </p>
- * <p>
- * An alternative is to use the DalResponseRecords class.
- * </p>
- * @author brian
- * @since 2.0
- */
-public interface DalResponseRecordVisitor {
-	/**
-	 * Called for each result row.
-	 * @param resultTagName
-	 * @param record
-	 * @return false to stop any more calls
-	 */
-	public boolean visitResponseRecord(String resultTagName, DalResponseRecord record);
-}

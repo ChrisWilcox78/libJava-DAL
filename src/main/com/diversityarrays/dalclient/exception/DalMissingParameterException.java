@@ -15,25 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.exception;
 
 /**
- * An explicit DalException only generated for errors encountered during a login attempt.
+ * This exception is thrown when an attempt to build a DAL command
+ * does not have all of the parameters required by the command template.
  * @author brian
  *
  */
-public class DalLoginException extends DalException {
+public class DalMissingParameterException extends DalException {
 
-	public DalLoginException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public DalLoginException(String message) {
+	public DalMissingParameterException(String message) {
 		super(message);
-	}
-
-	public DalLoginException(Throwable cause) {
-		super(cause);
 	}
 
 }

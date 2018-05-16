@@ -30,13 +30,13 @@ import java.util.Map;
 import java.util.Set;
 
 import com.diversityarrays.dalclient.DALClient;
-import com.diversityarrays.dalclient.DalLoginException;
-import com.diversityarrays.dalclient.DalResponse;
-import com.diversityarrays.dalclient.DalResponseException;
-import com.diversityarrays.dalclient.DalResponseFormatException;
-import com.diversityarrays.dalclient.DalResponseRecord;
-import com.diversityarrays.dalclient.DalResponseRecordVisitor;
-import com.diversityarrays.dalclient.DefaultDALClient;
+import com.diversityarrays.dalclient.dalresponse.DalResponse;
+import com.diversityarrays.dalclient.dalresponse.DalResponseRecordVisitor;
+import com.diversityarrays.dalclient.domain.DalResponseRecord;
+import com.diversityarrays.dalclient.exception.DalLoginException;
+import com.diversityarrays.dalclient.exception.DalResponseException;
+import com.diversityarrays.dalclient.exception.DalResponseFormatException;
+import com.diversityarrays.dalclient.impl.DefaultDALClient;
 
 public class SimpleDemo {
 

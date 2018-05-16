@@ -28,6 +28,12 @@ import java.util.Map;
 import org.apache.commons.collections15.Factory;
 import org.apache.commons.logging.Log;
 
+import com.diversityarrays.dalclient.dalresponse.DalResponse;
+import com.diversityarrays.dalclient.domain.ResponseType;
+import com.diversityarrays.dalclient.domain.SessionExpiryOption;
+import com.diversityarrays.dalclient.exception.DalLoginException;
+import com.diversityarrays.dalclient.exception.DalResponseException;
+
 /**
  * Provides an encapsulation of the primary functions required to easily
  * communicate with a DAL server.

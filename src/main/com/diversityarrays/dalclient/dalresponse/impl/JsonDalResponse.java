@@ -15,14 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.dalresponse.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import com.diversityarrays.dalclient.DalUtil.JsonResult;
+import com.diversityarrays.dalclient.DALClient;
+import com.diversityarrays.dalclient.dalresponse.DalResponseRecordVisitor;
+import com.diversityarrays.dalclient.domain.DalResponseRecord;
+import com.diversityarrays.dalclient.domain.HttpResponseInfo;
+import com.diversityarrays.dalclient.domain.ResponseType;
+import com.diversityarrays.dalclient.exception.DalResponseException;
+import com.diversityarrays.dalclient.exception.DalResponseFormatException;
+import com.diversityarrays.dalclient.impl.DalUtil;
+import com.diversityarrays.dalclient.impl.DalUtil.JsonResult;
 
 /**
  * Concrete implementation of DalResponse for JSON formatted data.

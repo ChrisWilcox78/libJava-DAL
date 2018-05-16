@@ -23,6 +23,8 @@ import java.util.Map;
 
 import org.apache.commons.collections15.Closure;
 
+import com.diversityarrays.dalclient.dalresponse.DalResponse;
+import com.diversityarrays.dalclient.exception.DalResponseException;
 import com.diversityarrays.dalclient.util.Pair;
 
 /**

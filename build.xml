@@ -60,9 +60,7 @@
 
       <src path="${src-main.dir}" />
 
-      <include name="com/diversityarrays/dalclient/*.java" />
-      <include name="com/diversityarrays/dalclient/util/*.java" />
-      <include name="com/diversityarrays/dalclient/http/*.java" />
+      <include name="com/diversityarrays/dalclient/**/*.java" />
     </javac>
 
     <jar destfile="lib/dalclient-core.jar" basedir="${build.dir}/dalclient-core">

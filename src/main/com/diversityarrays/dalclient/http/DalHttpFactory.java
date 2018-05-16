@@ -26,7 +26,7 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.commons.collections15.Factory;
 
-import com.diversityarrays.dalclient.HttpResponseInfo;
+import com.diversityarrays.dalclient.domain.HttpResponseInfo;
 import com.diversityarrays.dalclient.util.Pair;
 
 /**

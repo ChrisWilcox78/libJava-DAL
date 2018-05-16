@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.diversityarrays.dalclient.dalresponse.DalResponse;
+import com.diversityarrays.dalclient.dalresponse.DalResponseRecordVisitor;
+import com.diversityarrays.dalclient.exception.DalResponseException;
+import com.diversityarrays.dalclient.exception.DalResponseFormatException;
 
 /**
  * Provides a means of extracting all of the "records" in a DalResponse.

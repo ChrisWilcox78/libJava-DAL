@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.dalresponse.impl;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -32,6 +32,15 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.diversityarrays.dalclient.DALClient;
+import com.diversityarrays.dalclient.dalresponse.DalResponseRecordVisitor;
+import com.diversityarrays.dalclient.domain.DalResponseRecord;
+import com.diversityarrays.dalclient.domain.HttpResponseInfo;
+import com.diversityarrays.dalclient.domain.ResponseType;
+import com.diversityarrays.dalclient.exception.DalResponseException;
+import com.diversityarrays.dalclient.exception.DalResponseFormatException;
+import com.diversityarrays.dalclient.impl.DalUtil;
 
 /**
  * Concrete implementation of DalResponse for XML formatted data.

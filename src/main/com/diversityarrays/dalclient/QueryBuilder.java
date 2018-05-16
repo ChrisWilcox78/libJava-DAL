@@ -20,6 +20,11 @@ package com.diversityarrays.dalclient;
 import java.io.IOException;
 import java.util.Map;
 
+import com.diversityarrays.dalclient.dalresponse.DalResponse;
+import com.diversityarrays.dalclient.domain.OperationKeyword;
+import com.diversityarrays.dalclient.exception.DalMissingParameterException;
+import com.diversityarrays.dalclient.exception.DalResponseException;
+
 public interface QueryBuilder {
 
 	/**

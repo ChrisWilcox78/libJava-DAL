@@ -17,16 +17,28 @@
 */
 package com.diversityarrays.dalclient;
 
-/**
- * This exception is thrown when an attempt to build a DAL command
- * does not have all of the parameters required by the command template.
- * @author brian
- *
- */
-public class DalMissingParameterException extends DalException {
+import java.io.Closeable;
 
-	public DalMissingParameterException(String message) {
-		super(message);
-	}
+import com.diversityarrays.dalclient.domain.ResponseType;
 
+public interface CloseableDALClient extends DALClient, Closeable {
+
+	/**
+	 * Set the type (XML or JSON) to use for responses from server. The default
+	 * value is XML.
+	 *
+	 * @param responseType
+	 * @return this CloseableDALClient
+	 */
+	CloseableDALClient setResponseType(ResponseType responseType);
+	
+	/**
+	 * If switchGroupOnLogin is true then the client will automatically switch
+	 * to the first listed group for the user (if the login is successful).
+	 *
+	 * @param switchGroup
+	 *            true/false
+	 * @return this CloseableDALClient to support fluent coding style
+	 */
+	CloseableDALClient setAutoSwitchGroupOnLogin(boolean switchGroup);
 }

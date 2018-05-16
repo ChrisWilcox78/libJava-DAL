@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.impl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -39,12 +39,30 @@ import org.apache.commons.logging.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.diversityarrays.dalclient.DalUtil.JsonResult;
+import com.diversityarrays.dalclient.CloseableDALClient;
+import com.diversityarrays.dalclient.DALClient;
+import com.diversityarrays.dalclient.PostBuilder;
+import com.diversityarrays.dalclient.QueryBuilder;
+import com.diversityarrays.dalclient.UpdateBuilder;
+import com.diversityarrays.dalclient.dalresponse.DalResponse;
+import com.diversityarrays.dalclient.dalresponse.DalResponseRecordVisitor;
+import com.diversityarrays.dalclient.dalresponse.impl.CsvDalResponse;
+import com.diversityarrays.dalclient.dalresponse.impl.JsonDalResponse;
+import com.diversityarrays.dalclient.dalresponse.impl.XmlDalResponse;
+import com.diversityarrays.dalclient.domain.DalResponseRecord;
+import com.diversityarrays.dalclient.domain.HttpResponseInfo;
+import com.diversityarrays.dalclient.domain.ResponseType;
+import com.diversityarrays.dalclient.domain.SessionExpiryOption;
+import com.diversityarrays.dalclient.exception.DalLoginException;
+import com.diversityarrays.dalclient.exception.DalMissingParameterException;
+import com.diversityarrays.dalclient.exception.DalResponseException;
+import com.diversityarrays.dalclient.exception.DalResponseHttpException;
 import com.diversityarrays.dalclient.http.DalCloseableHttpClient;
 import com.diversityarrays.dalclient.http.DalHeader;
 import com.diversityarrays.dalclient.http.DalHttpFactory;
 import com.diversityarrays.dalclient.http.DalRequest;
 import com.diversityarrays.dalclient.http.DalResponseHandler;
+import com.diversityarrays.dalclient.impl.DalUtil.JsonResult;
 import com.diversityarrays.dalclient.util.Pair;
 
 /**
@@ -62,7 +80,7 @@ import com.diversityarrays.dalclient.util.Pair;
  *
  */
 @SuppressWarnings("nls")
-public class DefaultDALClient implements DALClient {
+public class DefaultDALClient implements CloseableDALClient {
 
 	private static final String MIME_TEXT_X_COMMA_SEPARATED_VALUES = "text/x-comma-separated-values"; //$NON-NLS-1$
     private static final String MIME_APPLICATION_JSON = "application/json"; //$NON-NLS-1$
@@ -189,7 +207,7 @@ public class DefaultDALClient implements DALClient {
 	}
 
 	@Override
-	public DALClient setResponseType(ResponseType responseType) {
+	public CloseableDALClient setResponseType(ResponseType responseType) {
 		if  (responseType.postValue==null) {
 			throw new IllegalArgumentException("Unsupported for setResponseType:"+responseType);
 		}
@@ -203,7 +221,7 @@ public class DefaultDALClient implements DALClient {
 	}
 
 	@Override
-	public DALClient setAutoSwitchGroupOnLogin(boolean b) {
+	public CloseableDALClient setAutoSwitchGroupOnLogin(boolean b) {
 		this.autoSwitchGroupOnLogin = b;
 		return this;
 	}
@@ -1058,6 +1076,11 @@ public class DefaultDALClient implements DALClient {
 		logDebug("Elapsed ms="+result.elapsedMillis+" for "+url); //$NON-NLS-1$ //$NON-NLS-2$
 
 		return buildDalResponse(url, result);
+	}
+
+	@Override
+	public void close() throws IOException {
+		this.logout();
 	}
 
 }

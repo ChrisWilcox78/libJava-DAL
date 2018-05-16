@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.impl;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,6 +23,13 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.diversityarrays.dalclient.DALClient;
+import com.diversityarrays.dalclient.QueryBuilder;
+import com.diversityarrays.dalclient.dalresponse.DalResponse;
+import com.diversityarrays.dalclient.domain.OperationKeyword;
+import com.diversityarrays.dalclient.exception.DalMissingParameterException;
+import com.diversityarrays.dalclient.exception.DalResponseException;
 
 /**
  * Provide a mechanism to build DAL command urls using templates which are "/" delimited

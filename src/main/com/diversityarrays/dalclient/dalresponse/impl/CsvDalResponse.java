@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.dalresponse.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,6 +23,14 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.diversityarrays.dalclient.dalresponse.DalResponseRecordVisitor;
+import com.diversityarrays.dalclient.domain.DalResponseRecord;
+import com.diversityarrays.dalclient.domain.HttpResponseInfo;
+import com.diversityarrays.dalclient.domain.ResponseType;
+import com.diversityarrays.dalclient.exception.DalResponseException;
+import com.diversityarrays.dalclient.exception.DalResponseFormatException;
+import com.diversityarrays.dalclient.impl.DalUtil;
 
 /**
  * This is a specialised DalResponse to cater for the results from an operation like "export/genotype".
@@ -187,7 +195,6 @@ public class CsvDalResponse extends AbstractDalResponse {
 	}
 
 	private boolean visitCsvLines(DalResponseRecordVisitor visitor) throws DalResponseException {
-		
 		boolean result = true;
 		
 		String url = getUrl();

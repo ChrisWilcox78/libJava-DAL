@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,6 +73,15 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.diversityarrays.dalclient.DALClient;
+import com.diversityarrays.dalclient.Main;
+import com.diversityarrays.dalclient.dalresponse.DalResponse;
+import com.diversityarrays.dalclient.dalresponse.DalResponseRecordVisitor;
+import com.diversityarrays.dalclient.domain.DalResponseRecord;
+import com.diversityarrays.dalclient.exception.DalMissingParameterException;
+import com.diversityarrays.dalclient.exception.DalResponseException;
+import com.diversityarrays.dalclient.exception.DalResponseFormatException;
+import com.diversityarrays.dalclient.exception.DalResponseHttpException;
 import com.diversityarrays.dalclient.http.DalCloseableHttpClient;
 import com.diversityarrays.dalclient.http.DalCloseableHttpResponse;
 import com.diversityarrays.dalclient.http.DalHeader;

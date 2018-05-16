@@ -40,13 +40,13 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.diversityarrays.dalclient.DalUtil;
-import com.diversityarrays.dalclient.HttpResponseInfo;
+import com.diversityarrays.dalclient.domain.HttpResponseInfo;
 import com.diversityarrays.dalclient.http.DalCloseableHttpClient;
 import com.diversityarrays.dalclient.http.DalCloseableHttpResponse;
 import com.diversityarrays.dalclient.http.DalHttpFactory;
 import com.diversityarrays.dalclient.http.DalRequest;
 import com.diversityarrays.dalclient.http.DalResponseHandler;
+import com.diversityarrays.dalclient.impl.DalUtil;
 import com.diversityarrays.dalclient.util.Pair;
 
 /**

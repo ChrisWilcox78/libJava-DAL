@@ -15,10 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.diversityarrays.dalclient;
+package com.diversityarrays.dalclient.dalresponse.impl;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+
+import com.diversityarrays.dalclient.dalresponse.DalResponse;
+import com.diversityarrays.dalclient.domain.HttpResponseInfo;
+import com.diversityarrays.dalclient.impl.DalUtil;
 
 /**
  * Provide the rudiments of a DalResponse.
